@@ -5,6 +5,8 @@ from HTMLParser import HTMLParser
 from glob import glob
 from getpass import getpass
 #a class to setup http link to the server
+
+
 class MyCon:
   def __init__(self,host='learn.tsinghua.edu.cn'):
        self.conn=httplib.HTTPConnection(host,80)
