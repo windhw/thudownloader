@@ -1,12 +1,9 @@
 #!C://pytho25//python.exe
 # -*- coding: gbk -*-
-import re,os,httplib,time,sys,global_var
+import re,os,httplib,sys,global_var,threading
 from HTMLParser import HTMLParser
-from glob import glob
-from getpass import getpass
+
 #a class to setup http link to the server
-
-
 class MyCon:
   def __init__(self,host='learn.tsinghua.edu.cn'):
        self.conn=httplib.HTTPConnection(host,80)
@@ -62,6 +59,8 @@ class parserCourse(HTMLParser):
    def handle_data(self,data):
    	   if(self.state=='ok'):
    	   	   coursename=re.findall(r'\s\S.*$',data)[0][1:]
+   	   	   #去除括号内的信息
+   	   	   coursename=coursename.split('(')[0]
    	   	   #print(coursename+'\n')
    	   	   self.course.append(coursename)
    	   	   self.list.append(self.course)
@@ -123,6 +122,49 @@ class parserFile(HTMLParser):
           self.file['file_size']=data
        if(self.state=='date'):
           self.file['file_date']=data
+#a class to parser notelist
+class parserNote(HTMLParser):
+   def __init__(self):
+      HTMLParser.__init__(self)
+      self.state='none'
+      self.notes=[]
+      self.note={}
+      
+   def handle_starttag(self,tag,attrs):
+       if(self.state=='none'):
+          for i in attrs:
+           if i[0]=='href' and ('note_reply.jsp?bbs_type=' in i[1]):
+             url=i[1]
+             self.note['note_url']=url
+             self.state='title'
+             return
+       if(self.state=='title_c'):
+          self.state='author'
+          return
+       if(self.state=='author_c'):
+          self.state='date'
+          return
+   def handle_endtag(self,tag): 
+       if(self.state=='title'):
+          self.state='title_c'
+          return
+       if(self.state=='author'):
+          self.state='author_c'
+          return
+       if(self.state=='date'):
+          self.notes.append(self.note)
+          self.note={}
+          self.state='none'
+          return
+   def handle_data(self,data):
+       if(self.state=='title'):
+          self.note['note_title']=data
+          #print(data+'\n')
+       if(self.state=='author'):
+          self.note['note_author']=data
+       if(self.state=='date'):
+          self.note['note_date']=data
+
 
 #a function that can get a list ,which contains the full info of files on server
 def getlist():
@@ -135,6 +177,8 @@ def getlist():
   pc.feed(coursepage)
   list=pc.list
   pf=parserFile()
+  pn=parserNote()
+  print "开始抓文件和公告"
   for course in list:
     ff=conn.open('/lesson/student/download.jsp?course_id='+course[0][-5:])
     filepage=ff.read()
@@ -143,26 +187,44 @@ def getlist():
     pf.feed(filepage)
     files=pf.files
     course.append(files)
+    data=conn.open('/public/bbs/getnoteid_student.jsp?course_id='+course[0][-5:],"HEAD")
+    uu=data.getheader('Location').replace('http://learn.tsinghua.edu.cn','')
+    data.read()
+    data.close()
+    data=conn.open(uu)
+    pn.__init__()
+    pn.feed(data.read())
+    course.append(pn.notes)
+    data.close()
   for course in list:
   	  for file in course[2]:
   	  	  data=conn.open(file['file_url'],"HEAD")
+  	  	  #print data.getheaders()
   	  	  uu=data.getheader('content-disposition')
   	  	  data.read()
   	  	  data.close()
-  	  	  file['file_realname']=re.findall(r'=".*"',uu)[0][2:-1]
+  	  	  raw_name=re.findall(r'=".*"',uu)[0][2:-1]
+  	  	  #找寻随机数
+  	  	  file_random=re.findall(r'\S+_(\d{7,9}).\w+$',raw_name)[0]
+  	  	  if file_random:
+  	  	  	  file['file_realname']=raw_name.replace('_'+file_random,'')
+  	  	  else:
+  	  	  	  print '无法解析除随机号，使用原文件名，请报告这个错误'
+  	  	  	  file['file_realname']=raw_name
+  	  	  
   	  	  #print file['file_realname']
   return list
 
 def DownCourse(courseindex):
 	conn=global_var.conn
 	list=global_var.list
-	download_path=global_var.download_path
+	download_path=global_var.setting['download_path']
 	os.chdir(download_path)
-	if not glob(list[courseindex][1]):
+	if not os.path.exists(download_path+list[courseindex][1].decode('gbk')):
 		os.mkdir(list[courseindex][1])
-	os.chdir(download_path+'//'+list[courseindex][1])
+	os.chdir(download_path+list[courseindex][1].decode('gbk'))
 	for file in global_var.list[courseindex][2]:
-		if (not glob(file['file_realname'])):
+		if not os.path.exists(download_path+list[courseindex][1].decode('gbk')+u'\\'+file['file_realname'].decode('gbk')):
 			newfile=open(file['file_realname'],'wb')
 			global_var.statusBar.SetStatusText('正在下载'+file['file_realname'])
 			newfile.write(conn.open(file['file_url']).read())
@@ -172,24 +234,25 @@ def DownCourse(courseindex):
 	return 
 
 def DownAll():
-	list=global_var.list
-	for courseindex in range(len(list)):
-		DownCourse(courseindex)
+	mythread=DownAllThread(0)
+	print "Thread running..."
+	mythread.start()
 
 def DownSingle(courseindex,fileindex):
 	conn=global_var.conn
 	list=global_var.list
 	exsit=0
-	download_path=global_var.download_path
+	download_path=global_var.setting['download_path']
 	if courseindex < len(list):
 		if fileindex < len(list[courseindex][2]):
 			os.chdir(download_path)
-			if (not glob(list[courseindex][1])):
+			if (not os.path.exists(download_path+list[courseindex][1])):
 				os.mkdir(list[courseindex][1])
-			os.chdir(download_path+'//'+list[courseindex][1])
-			if glob(list[courseindex][2][fileindex]['file_realname']):
+			
+			#此处的字符编码统一成unicode，防止出错
+			os.chdir(download_path+list[courseindex][1].decode('gbk'))
+			if os.path.exists(download_path+list[courseindex][1]+u'\\'+list[courseindex][2][fileindex]['file_realname']):
 				exsit=1
-			if exsit:
 				info="正在覆盖文件"+list[courseindex][2][fileindex]['file_realname']
 			else:
 				info="正在下载文件"+list[courseindex][2][fileindex]['file_realname']
@@ -208,17 +271,20 @@ def DownSingle(courseindex,fileindex):
 	
 def IsExist(courseindex,fileindex):
 	list=global_var.list
-	download_path=global_var.download_path
-	if courseindex < len(list):
-		if fileindex < len(list[courseindex][2]):
-			os.chdir(download_path)
-			if (not glob(list[courseindex][1])):
-				return False
-			else:
-				os.chdir(download_path+'//'+list[courseindex][1])
-				if glob(list[courseindex][2][fileindex]['file_realname']):
-					return download_path+list[courseindex][1]
-				else:
-					return False
-	os.chdir(download_path)
-	return
+	download_path=global_var.setting['download_path']
+	path=download_path+list[courseindex][1].decode('gbk')+u'\\'+list[courseindex][2][fileindex]['file_realname'].decode('gbk')
+	if os.path.exists(path):
+		return path
+	else:
+		return False
+
+class DownAllThread(threading.Thread):
+	def __init__(self,courseindex):
+		self.index=courseindex
+		threadname="downAllThread"+str(self.index)
+		threading.Thread.__init__(self, name = threadname)
+	def run(self):
+		
+		list=global_var.list
+		for courseindex in range(len(list)):
+			DownCourse(courseindex)
