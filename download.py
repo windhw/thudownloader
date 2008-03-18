@@ -30,8 +30,8 @@ class MyCon:
                 thuwebcookie=re.findall(r'thuwebcookie=.*?;',rescookie)[0][13:-1]
                 self.precookie+=('JSESSIONID=' + JSESSIONID + '; thuwebcookie=' + thuwebcookie + '; ')
             except:
-          	    print( '对不起，无法登陆，程序退出\n')
-          	    raise 'err'
+                print( '对不起，无法登陆，程序退出\n')
+                raise 'err'
         try:
             THNSV2COOKIE=re.findall(r'THNSV2COOKIE=.*?;',rescookie)[0][13:-1]
             self.thu = ' THNSV2COOKIE=' + THNSV2COOKIE + ' '
