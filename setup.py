@@ -10,5 +10,5 @@ setup(
     name = "Downloader",
 
     # targets to build
-    windows = ["Downloader.py"],
+    windows = ["MainFrame.py"],
     )

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: gbk -*-
-import os,sys
+import os
 
 #定义程序运行期间的全局变量
 conn=None
@@ -15,8 +15,15 @@ userpass=""
 local_dir=""
 current_courseindex=0
 current_fileindex=[]
+current_markfile=[]
+localsel=[]
+local_files=[]
+print_files=[]
 file_askinfo=""
 setting={}
+#注意新公告中直接显示了公告内容,格式：{(courseindex,noteindex):notecontent,...}
+newnote={}
+newfile=[]
 
 main_frame=None
 logDialog=None
@@ -29,3 +36,6 @@ statusBar=None
 askDialog=None
 setDialog=None
 selDirDialog=None
+warnDialog=None
+html=None
+theThread=None
