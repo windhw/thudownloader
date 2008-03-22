@@ -328,7 +328,7 @@ def RefreshCourse(courseindex):
 def CreateHtml(courseindex,oldnote=[]):
     list=global_var.list
     conn=global_var.conn
-    f=open(global_var.app_path+'\\notes\\'+list[courseindex][1]+'.htm','w')
+    f=open(os.path.join(global_var.app_path,'notes',list[courseindex][1]+'.htm'),'w')
     pre='''
     <html>
     <head>
@@ -429,7 +429,7 @@ def ShowNew():
     </body>
     </html>
     '''
-    f=open(global_var.app_path+'notes\\newinfo.htm','w')
+    f=open(os.path.join(global_var.app_path,'notes','newinfo.htm'),'w')
     f.write(pre.decode('gbk').encode('utf'))
     f.close()
         
@@ -442,8 +442,9 @@ def DownCourse(courseindex):
     list=global_var.list
     download_path=global_var.setting['download_path']
     os.chdir(download_path)
-    if not os.path.exists(download_path+u'\\'+list[courseindex][1].decode('gbk')):
-        os.mkdir(download_path+u'\\'+list[courseindex][1].decode('gbk'))
+    coursedir=os.path.join(download_path,list[courseindex][1].decode('gbk'))
+    if not os.path.exists(coursedir):
+        os.mkdir(coursedir)
     for fileindex in range(len(global_var.list[courseindex][2])):
         file=global_var.list[courseindex][2][fileindex]
         if FileType(courseindex,fileindex)!=0:
@@ -451,7 +452,8 @@ def DownCourse(courseindex):
         else:
             if global_var.app_stat=='breakdown':
                 return
-            newfile=open(download_path+'\\'+list[courseindex][1].decode('gbk')+u'\\'+file['file_realname'].decode('gbk'),'wb')
+            filepath=os.path.join(download_path,list[courseindex][1].decode('gbk'),file['file_realname'].decode('gbk'))
+            newfile=open(filepath,'wb')
             global_var.statusBar.SetStatusText('正在下载'+file['file_realname'])
             newfile.write(conn.open(file['file_url']).read())
             newfile.close()
@@ -486,18 +488,20 @@ def DownSingle(courseindex,fileindex):
     download_path=global_var.setting['download_path']
     if courseindex < len(list):
         if fileindex < len(list[courseindex][2]):
-            os.chdir(download_path)
-            if (not os.path.exists(download_path+u'\\'+list[courseindex][1].decode('gbk'))):
-                os.mkdir(list[courseindex][1])
+            #os.chdir(download_path)
+            coursedir=os.path.join(download_path,list[courseindex][1].decode('gbk'))
+            if (not os.path.exists(coursedir)):
+                os.mkdir(coursedir)
             #此处的字符编码统一成unicode，防止出错
             os.chdir(download_path+u'\\'+list[courseindex][1].decode('gbk'))
-            if os.path.exists(download_path+u'\\'+list[courseindex][1].decode('gbk')+u'\\'+list[courseindex][2][fileindex]['file_realname'].decode('gbk')):
+            filepath=os.path.join(coursedir,list[courseindex][2][fileindex]['file_realname'].decode('gbk'))
+            if os.path.exists(filepath):
                 exsit=1
                 info="正在覆盖文件"+list[courseindex][2][fileindex]['file_realname']
             else:
                 info="正在下载文件"+list[courseindex][2][fileindex]['file_realname']
             global_var.statusBar.SetStatusText(info)
-            newfile=open(list[courseindex][2][fileindex]['file_realname'],'wb')
+            newfile=open(filepath,'wb')
             newfile.write(conn.open(list[courseindex][2][fileindex]['file_url']).read())
             newfile.close()
             if exsit:
@@ -505,7 +509,7 @@ def DownSingle(courseindex,fileindex):
             else:
                 info="下载文件"+list[courseindex][2][fileindex]['file_realname']+"成功"
             global_var.statusBar.SetStatusText(info)
-    os.chdir(download_path)
+    #os.chdir(download_path)
     return
     
 

@@ -18,7 +18,7 @@ def Refresh():
 		download.refreshNotes()
 		ShowCourse()
 		ShowFile(global_var.current_courseindex)
-		notename=global_var.app_path+'\\notes\\'+global_var.list[global_var.current_courseindex][1]+'.htm'
+		notename=global_var.app_path+'notes\\'+global_var.list[global_var.current_courseindex][1]+'.htm'
 		if os.path.exists(notename):
 			global_var.html.LoadFile(notename)
 		
@@ -35,8 +35,9 @@ def ShowFile(courseindex=0):
 	'''当要显示更新内容（courseindex=-1）时不刷新课程列表，而是显示html'''
 	if courseindex==-1:
 		notename=global_var.app_path+'\\notes\\newinfo.htm'
-		global_var.html.LoadFile(notename)
-		return
+		if(os.path.exists(notename)):
+			global_var.html.LoadFile(notename)
+			return
 	notename=global_var.app_path+'\\notes\\'+global_var.list[courseindex][1]+'.htm'
 	if(os.path.exists(notename)):
 		global_var.html.LoadFile(notename)
@@ -474,6 +475,8 @@ def FrameInit(frame):
 		history=[]
 		pickle.dump(history,f,True)
 		f.close()
+	if not (os.path.exists(global_var.app_path+'notes') and os.path.isdir(global_var.app_path+'notes')):
+	    os.mkdir(os.path.join(global_var.app_path,'notes'))
 	#把配置文件读入全局变量
 	loadSetting()
 	loadList()
