@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: gbk -*-
+
 from distutils.core import setup
 import py2exe
 
@@ -6,9 +9,7 @@ setup(
     # 'version' is given, then a versioninfo resource is built from
     # them and added to the executables.
     version = "0.5.0",
-    description = "sample script",
+    description = u"ÍøÂçÑ§ÌÃÖúÊÖ",
     name = "Downloader",
-
-    # targets to build
-    windows = ["MainFrame.py"],
-    )
+    windows = [{"script":"Downloader.py","icon_resources": [(1, "tubiao.ico")]}])
+    
