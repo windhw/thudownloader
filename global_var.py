@@ -6,6 +6,7 @@ import os
 conn=None
 app_stat="Idle"
 log_stat='no'
+log_num=0
 list=[]
 app_path=os.path.abspath('')
 if len(app_path)>=5:
@@ -36,6 +37,8 @@ statusBar=None
 askDialog=None
 setDialog=None
 selDirDialog=None
+aboutDialog=None
 warnDialog=None
 html=None
 theThread=None
+t2=None

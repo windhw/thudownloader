@@ -3,27 +3,30 @@
 
 #为GUI提供必要的类和函数
 import global_var,download,Dialogs
-import wx,os,threading,urllib
+import wx,os,threading
 import cPickle as pickle
 from shutil import copyfile
 
 #刷新所有文件列表，获取并创建公告网页内容
 def Refresh():
 	global_var.app_stat='refresh'
-	try:
+	if 1:
+	#try:
 		global_var.statusBar.SetStatusText(u"正在获取网络学堂文件列表")
 		download.getCourse()
 		download.refreshFiles()
 		download.refreshNotes()
 		ShowCourse()
 		ShowFile(global_var.current_courseindex)
-		notename=global_var.app_path+'notes\\'+global_var.list[global_var.current_courseindex][1]+'.htm'
+		a=os.path.join(global_var.setting['download_path'],u'notes')
+		b=global_var.list[global_var.current_courseindex][1].decode('gbk')+u'.htm'
+		notename=os.path.join(a,b)
 		if os.path.exists(notename):
 			global_var.html.LoadFile(notename)
 		
-	except:
-		global_var.statusBar.SetStatusText(u":（ 列表刷新失败，登录认证失败")
-		return
+	#except:
+	#	global_var.statusBar.SetStatusText(u":（ 列表刷新失败，登录认证失败")
+	#	return
 	global_var.statusBar.SetStatusText(u"列表刷新成功")
 	saveList()
 	global_var.app_stat='Idle'
@@ -33,11 +36,15 @@ def Refresh():
 def ShowFile(courseindex=0):
 	'''当要显示更新内容（courseindex=-1）时不刷新课程列表，而是显示html'''
 	if courseindex==-1:
-		notename=os.path.join(global_var.app_path,'notes','newinfo.htm')
+		a=os.path.join(global_var.setting['download_path'],u'notes')
+		b=u'newinfo.htm'
+		notename=os.path.join(a,b)
 		if(os.path.exists(notename)):
 			global_var.html.LoadFile(notename)
 			return
-	notename=os.path.join(global_var.app_path,'notes',global_var.list[courseindex][1]+'.htm')
+	a= os.path.join(global_var.setting['download_path'],u'notes')
+	b= global_var.list[courseindex][1].decode('gbk')+u'.htm'
+	notename=os.path.join(a,b)
 	if(os.path.exists(notename)):
 		global_var.html.LoadFile(notename)
 	global_var.current_markfile=[]
@@ -105,24 +112,24 @@ def refreshCourse():
 
 
 def loadSetting():
-	f=open(global_var.app_path+'setting','rb')
+	f=open(os.path.join(global_var.app_path.decode('gbk'),u'setting'),'rb')
 	global_var.setting=pickle.load(f)
 	f.close()
 
 #把程序中的设置信息保存至本地
 def saveSetting():
-	f=open(global_var.app_path+'setting','wb')
+	f=open(os.path.join(global_var.app_path.decode('gbk'),u'setting'),'wb')
 	pickle.dump(global_var.setting,f,True)
 	f.close()
 
 #从本地读入设置信息
 def loadList():
-	f=open(global_var.app_path+'history','rb')
+	f=open(os.path.join(global_var.app_path.decode('gbk'),u'history'),'rb')
 	global_var.list=pickle.load(f)
 	f.close()
 
 def saveList():
-	f=open(global_var.app_path+'history','wb')
+	f=open(os.path.join(global_var.app_path.decode('gbk'),u'history'),'wb')
 	pickle.dump(global_var.list,f,True)
 	f.close()
 
@@ -286,13 +293,13 @@ def exitItem_handle(event):
     global_var.main_frame.Close()
 
 def hlpItem_handle(event):
-    f=open(os.path.join(global_var.app_path,'help.txt'))
+    f=open(os.path.join(global_var.app_path.decode('gbk'),u'help.txt'))
     global_var.warnDialog.txtInfo.SetValue(f.read())
     f.close()
     global_var.warnDialog.ShowModal()
 
 def aboutItem_handle(event):
-    pass
+    ret = global_var.aboutDialog.ShowModal()
     #print "Event handler `aboutItem_handle' not implemented!"
 
 
@@ -422,15 +429,16 @@ def _Copy():
     print global_var.print_files
     for i in global_var.print_files:
         (courseindex,fileindex)=global_var.local_files[i]
-        coursename=global_var.list[courseindex][1]
-        filename=global_var.list[courseindex][2][fileindex]['file_realname']
-        soursepath=global_var.setting['download_path'].decode('gbk')+u'\\'+coursename.decode('gbk')+u'\\'+filename.decode('gbk')
-        targetpath=global_var.setting['print_path'].decode('gbk')+u'\\'+filename.decode('gbk')
+        coursename=global_var.list[courseindex][1].decode('gbk')
+        filename=global_var.list[courseindex][2][fileindex]['file_realname'].decode('gbk')
+        a=os.path.join(global_var.setting['download_path'],coursename)
+        soursepath=os.path.join(a,filename)
+        targetpath=os.path.join(global_var.setting['print_path'],filename)
         print soursepath+'->'+targetpath
         if os.path.exists(soursepath) :
             if os.path.exists(targetpath):
                 os.remove(targetpath)
-            global_var.statusBar.SetStatusText(u"正在复制文件"+filename.decode('gbk'))
+            global_var.statusBar.SetStatusText(u"正在复制文件"+filename)
             copyfile(soursepath,targetpath)
             global_var.statusBar.SetStatusText(u"复制完成")
 def btnCopy_handle(event):
@@ -461,7 +469,7 @@ def FrameInit(frame):
 	global_var.selDirDialog=wx.DirDialog(None, u"选择默认目录",style=wx.DD_DEFAULT_STYLE | wx.DD_NEW_DIR_BUTTON)
 	global_var.logDialog=Dialogs.LogDialog(frame)
 	global_var.warnDialog=Dialogs.WarnDialog(frame)
-	
+	global_var.aboutDialog=Dialogs.AboutDialog(frame)
 	
 	#建立连接对象
 	global_var.conn=download.MyCon()
@@ -472,20 +480,19 @@ def FrameInit(frame):
 	
 	
 	#保证本地的配置文件存在，如果不存在，生成默认的setting
-	if not (os.path.exists(global_var.app_path+'setting') and os.path.isfile(global_var.app_path+'setting')):
+	if not (os.path.exists(os.path.join(global_var.app_path.decode('gbk'),u'setting')) and os.path.isfile(os.path.join(global_var.app_path.decode('gbk'),u'setting'))):
 		f=open(global_var.app_path+'setting','wb')
 		setting={'userinfo':['',''],'autologin':False,'download_path':'D:\\','print_path':'C:\\','filter':[]}
 		pickle.dump(setting,f,True)
 		f.close()
-	if not (os.path.exists(global_var.app_path+'history') and os.path.isfile(global_var.app_path+'history')):
-		f=open(global_var.app_path+'history','wb')
+	if not (os.path.exists(os.path.join(global_var.app_path.decode('gbk'),u'history')) and os.path.isfile(os.path.join(global_var.app_path.decode('gbk'),u'history'))):
+		f=open(os.path.join(global_var.app_path.decode('gbk'),u'history'),'wb')
 		history=[]
 		pickle.dump(history,f,True)
 		f.close()
 	##################################################################################################
 	#改动
-	if not (os.path.exists(global_var.app_path+'notes') and os.path.isdir(global_var.app_path+'notes')):
-	    os.mkdir(os.path.join(global_var.app_path,'notes'))
+
 	#把配置文件读入全局变量
 	loadSetting()
 	loadList()
@@ -579,6 +586,6 @@ class MyThread(threading.Thread):
         apply(self.func,self.keyw)
 
 def justpass():
-    f=urllib.urlopen('http://mydownloader.3322.org/count/')
-    f.read()
-    f.close()
+    pass
+    
+

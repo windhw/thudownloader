@@ -87,33 +87,33 @@ class LogDialog(wx.Dialog):
         # end wxGlade
         
     def btnLogin_handle(self,event):
-        userid=self.txtUserid.GetValue()
-        userpass=self.txtUserpass.GetValue()
-        self.info=[userid,userpass]
-        if self.autoSaved.GetValue():
-            global_var.setting['userinfo'][0]=userid
-            global_var.setting['userinfo'][1]=userpass
-            global_var.setting['autologin']=True
-        else:
-            global_var.setting['userinfo'][0]=''
-            global_var.setting['userinfo'][1]=''
-            global_var.setting['autologin']=False
-        GUItools.saveSetting()
-        self.EndModal(wx.ID_OK)
-        return
+        self.btnSaveSet_handle(event)
+        if os.path.isdir(self.txtSetDownPath.GetValue()) and os.path.isdir(self.txtSetPrintPath.GetValue()):
+            userid=self.txtUserid.GetValue()
+            userpass=self.txtUserpass.GetValue()
+            self.info=[userid,userpass]
+            if self.autoSaved.GetValue():
+                global_var.setting['userinfo'][0]=userid
+                global_var.setting['userinfo'][1]=userpass
+                global_var.setting['autologin']=True
+            else:
+                global_var.setting['userinfo'][0]=''
+                global_var.setting['userinfo'][1]=''
+                global_var.setting['autologin']=False
+            GUItools.saveSetting()
+            self.EndModal(wx.ID_OK)
+            return
     
     def btnSaveSet_handle(self,event):
         if os.path.isdir(self.txtSetDownPath.GetValue()) and os.path.isdir(self.txtSetPrintPath.GetValue()):
             global_var.setting['download_path']=self.txtSetDownPath.GetValue()
             global_var.setting['print_path']=self.txtSetPrintPath.GetValue()
             GUItools.saveSetting()
-            global_var.warnDialog.txtInfo.SetValue(u'默认路径设置完成')
+            global_var.warnDialog.txtInfo.SetValue(u'默认设置完成')
             global_var.warnDialog.ShowModal()
         else:
-            global_var.warnDialog.txtInfo.SetValue(u'你设置的路径不正确，请重新设置')
+            global_var.warnDialog.txtInfo.SetValue(u'你设置的文件夹不存在，请重新设置')
             global_var.warnDialog.ShowModal()
-            self.txtSetDownPath.SetValue(global_var.setting['download_path'])
-            self.txtSetPrintPath.SetValue(global_var.setting['print_path'])
 
     def btnSetDownPath_onclick(self,event):
         if global_var.selDirDialog.ShowModal() == wx.ID_OK:
@@ -191,3 +191,38 @@ class WarnDialog(wx.Dialog):
         sizer_2.Fit(self)
         self.Layout()
         # end wxGlade
+
+class AboutDialog(wx.Dialog):
+    def __init__(self, *args, **kwds):
+        # begin wxGlade: AboutDialog.__init__
+        kwds["style"] = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.THICK_FRAME
+        wx.Dialog.__init__(self, *args, **kwds)
+        self.label_3 = wx.StaticText(self, -1, _("Copyright(C)2008"))
+        self.label_4 = wx.StaticText(self, -1, _("haow05@gmail.com, dinstein@163.com"))
+        self.label_8 = wx.StaticText(self, -1, "")
+
+        self.__set_properties()
+        self.__do_layout()
+        # end wxGlade
+
+    def __set_properties(self):
+        # begin wxGlade: AboutDialog.__set_properties
+        self.SetTitle(_(u"关于MyDownloader..."))
+        _icon = wx.EmptyIcon()
+        _icon.CopyFromBitmap(wx.Bitmap(_("MyDownloader.ico"), wx.BITMAP_TYPE_ANY))
+        self.SetIcon(_icon)
+        self.SetSize((370,150))
+        # end wxGlade
+
+    def __do_layout(self):
+        # begin wxGlade: AboutDialog.__do_layout
+        sizer_11 = wx.BoxSizer(wx.VERTICAL)
+        sizer_11.Add(self.label_3, 1, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 0)
+        sizer_11.Add(self.label_4, 1, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 0)
+        sizer_11.Add(self.label_8, 1, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 0)
+        sizer_11.Add((20, 20), 1, wx.ALL, 0)
+        self.SetSizer(sizer_11)
+        self.Layout()
+        # end wxGlade
+
+# end of class AboutDialog

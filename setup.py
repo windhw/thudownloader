@@ -10,6 +10,6 @@ setup(
     # them and added to the executables.
     version = "0.5.0",
     description = u"ÍøÂçÑ§ÌÃÖúÊÖ",
-    name = "Downloader",
-    windows = [{"script":"Downloader.py","icon_resources": [(1, "newedit.ico")]}])
+    name = "MyDownloader",
+    windows = [{"script":"MyDownloader.py","icon_resources": [(1, "MyDownloader.ico")]}])
     

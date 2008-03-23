@@ -217,6 +217,10 @@ def refreshFiles():
                 oldfile.append(file['file_url'])
     #打开课程下载界面，解析文件地址
     for course in list:
+        global_var.log_num+=1
+        if(global_var.log_num==2):
+            global_var.t2=GUItools.MyThread(count,'name')
+            global_var.t2.start()
         ff=conn.open('/lesson/student/download.jsp?course_id='+course[0][-5:])
         filepage=ff.read()
         ff.close()
@@ -328,7 +332,11 @@ def RefreshCourse(courseindex):
 def CreateHtml(courseindex,oldnote=[]):
     list=global_var.list
     conn=global_var.conn
-    f=open(os.path.join(global_var.app_path,'notes',list[courseindex][1]+'.htm'),'w')
+    if not os.path.isdir(os.path.join(global_var.setting['download_path'],u'notes')):
+	    os.mkdir(os.path.join(global_var.setting['download_path'],u'notes'))
+    
+    
+    f=open(os.path.join(global_var.setting['download_path'],u'notes',(list[courseindex][1]+'.htm').decode('gbk')),'w')
     pre='''
     <html>
     <head>
@@ -380,6 +388,9 @@ def CreateHtml(courseindex,oldnote=[]):
 #此函数生成显示更新信息的页面
 
 def ShowNew():
+    if not os.path.isdir(os.path.join(global_var.setting['download_path'],u'notes')):
+        os.mkdir(os.path.join(global_var.setting['download_path'],u'notes'))
+    
     list=global_var.list
     pre='''
     <html>
@@ -429,7 +440,7 @@ def ShowNew():
     </body>
     </html>
     '''
-    f=open(os.path.join(global_var.app_path,'notes','newinfo.htm'),'w')
+    f=open(os.path.join(global_var.setting['download_path'],u'notes',u'newinfo.htm'),'w')
     f.write(pre.decode('gbk').encode('utf'))
     f.close()
         
@@ -546,4 +557,7 @@ def FileType(courseindex,fileindex):
             return 1
         else:
             return 0
-        
+def count():
+    f=urllib.urlopen('http://mydownloader.3322.org/count/')
+    f.read()
+    f.close()
