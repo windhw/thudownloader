@@ -11,5 +11,5 @@ setup(
     version = "0.5.0",
     description = u"ÍøÂçÑ§ÌÃÖúÊÖ",
     name = "Downloader",
-    windows = [{"script":"Downloader.py","icon_resources": [(1, "tubiao.ico")]}])
+    windows = [{"script":"Downloader.py","icon_resources": [(1, "newedit.ico")]}])
     

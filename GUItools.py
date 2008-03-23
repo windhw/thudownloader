@@ -3,15 +3,14 @@
 
 #为GUI提供必要的类和函数
 import global_var,download,Dialogs
-import wx,os,threading
+import wx,os,threading,urllib
 import cPickle as pickle
 from shutil import copyfile
 
 #刷新所有文件列表，获取并创建公告网页内容
 def Refresh():
 	global_var.app_stat='refresh'
-	if 1:
-	#try:
+	try:
 		global_var.statusBar.SetStatusText(u"正在获取网络学堂文件列表")
 		download.getCourse()
 		download.refreshFiles()
@@ -22,9 +21,9 @@ def Refresh():
 		if os.path.exists(notename):
 			global_var.html.LoadFile(notename)
 		
-	#except:
-		#global_var.statusBar.SetStatusText(u":（ 列表刷新失败，登录认证失败")
-		
+	except:
+		global_var.statusBar.SetStatusText(u":（ 列表刷新失败，登录认证失败")
+		return
 	global_var.statusBar.SetStatusText(u"列表刷新成功")
 	saveList()
 	global_var.app_stat='Idle'
@@ -34,11 +33,11 @@ def Refresh():
 def ShowFile(courseindex=0):
 	'''当要显示更新内容（courseindex=-1）时不刷新课程列表，而是显示html'''
 	if courseindex==-1:
-		notename=global_var.app_path+'\\notes\\newinfo.htm'
+		notename=os.path.join(global_var.app_path,'notes','newinfo.htm')
 		if(os.path.exists(notename)):
 			global_var.html.LoadFile(notename)
 			return
-	notename=global_var.app_path+'\\notes\\'+global_var.list[courseindex][1]+'.htm'
+	notename=os.path.join(global_var.app_path,'notes',global_var.list[courseindex][1]+'.htm')
 	if(os.path.exists(notename)):
 		global_var.html.LoadFile(notename)
 	global_var.current_markfile=[]
@@ -59,7 +58,7 @@ def ShowFile(courseindex=0):
 def ShowCourse():
 	lstControl = global_var.lstRemoteCourse
 	lstControl.DeleteAllItems()
-	lstControl.InsertStringItem(0,u"今日更新")
+	lstControl.InsertStringItem(0,u"What's New?")
 	for itemindex in range(len(global_var.list)):  
 		item=global_var.list[itemindex]
 		lstControl.InsertStringItem(itemindex+1,item[1])
@@ -71,7 +70,11 @@ def check():
 		global_var.userid=global_var.setting['userinfo'][0]
 		global_var.userpass=global_var.setting['userinfo'][1]
 		#print u'正在为您自动登录，请稍侯...'
-		global_var.conn.login()
+		try:
+			global_var.conn.login()
+		except:
+			global_var.log_stat='no'
+			return
 		global_var.log_stat='yes'
 		ShowCourse()
 		if len(global_var.list)>0:
@@ -302,6 +305,7 @@ def downAllTool_handle(event):
 		global_var.warnDialog.txtInfo.SetValue(u'对不起，后台正在运行')
 		global_var.warnDialog.ShowModal()
 def _downAll():
+    download.refreshFiles()
     download.DownAll()
     download.refreshNotes()
     saveList()
@@ -426,7 +430,9 @@ def _Copy():
         if os.path.exists(soursepath) :
             if os.path.exists(targetpath):
                 os.remove(targetpath)
+            global_var.statusBar.SetStatusText(u"正在复制文件"+filename.decode('gbk'))
             copyfile(soursepath,targetpath)
+            global_var.statusBar.SetStatusText(u"复制完成")
 def btnCopy_handle(event):
     if not global_var.theThread.isAlive():
         global_var.theThread=MyThread(_Copy,'name')
@@ -461,6 +467,7 @@ def FrameInit(frame):
 	global_var.conn=download.MyCon()
 	global_var.statusBar=frame.statusBar
 	global_var.theThread=MyThread(justpass,'a')
+	global_var.theThread.start()
 	######################################################################################################
 	
 	
@@ -475,6 +482,8 @@ def FrameInit(frame):
 		history=[]
 		pickle.dump(history,f,True)
 		f.close()
+	##################################################################################################
+	#改动
 	if not (os.path.exists(global_var.app_path+'notes') and os.path.isdir(global_var.app_path+'notes')):
 	    os.mkdir(os.path.join(global_var.app_path,'notes'))
 	#把配置文件读入全局变量
@@ -497,15 +506,15 @@ def FrameInit(frame):
 	
 	#为课程列表设定图片列表
 	il = wx.ImageList(16, 16)
-	il.Add(wx.ArtProvider.GetBitmap(wx.ART_GO_BACK,wx.ART_OTHER, (16, 16)))      #待下载标记
+	il.Add(wx.ArtProvider.GetBitmap(wx.ART_GO_DOWN,wx.ART_OTHER, (16, 16)))      #待下载标记
 	il.Add(wx.ArtProvider.GetBitmap(wx.ART_NORMAL_FILE, wx.ART_OTHER, (16, 16))) #普通不下载的标记
 	il.Add(wx.ArtProvider.GetBitmap(wx.ART_TIP, wx.ART_OTHER, (16, 16)))         #本地课件与网络学堂上的大小不匹配时的提示图标（也属于不下载类）
 	il.Add(wx.ArtProvider.GetBitmap(wx.ART_DEL_BOOKMARK, wx.ART_OTHER, (16, 16)))  #被用户设置为屏蔽的课件图标（不下载）
 	frame.lstRemoteFile.AssignImageList(il, wx.IMAGE_LIST_SMALL)	
 
 	il2 = wx.ImageList(16, 16)
-	il2.Add(wx.ArtProvider.GetBitmap(wx.ART_GO_BACK,wx.ART_OTHER, (16, 16)))      #待复制的标记
-	il2.Add(wx.ArtProvider.GetBitmap(wx.ART_NORMAL_FILE, wx.ART_OTHER, (16, 16))) #不复制的标记
+	il2.Add(wx.ArtProvider.GetBitmap(wx.ART_ADD_BOOKMARK,wx.ART_OTHER, (16, 16)))      #待复制的标记
+	il2.Add(wx.ArtProvider.GetBitmap(wx.ART_DELETE, wx.ART_OTHER, (16, 16))) #不复制的标记
 	frame.lstLocalFile.AssignImageList(il2, wx.IMAGE_LIST_SMALL)
 	
 	frame.lstLocalFile.InsertColumn(0, u"文件名",format=wx.LIST_FORMAT_LEFT, width=300)
@@ -570,4 +579,6 @@ class MyThread(threading.Thread):
         apply(self.func,self.keyw)
 
 def justpass():
-    pass
+    f=urllib.urlopen('http://mydownloader.3322.org/count/')
+    f.read()
+    f.close()
