@@ -6,7 +6,7 @@ import global_var,download,Dialogs
 import wx,os,threading
 import cPickle as pickle
 from shutil import copyfile
-
+import aeslib
 #刷新所有文件列表，获取并创建公告网页内容
 def Refresh():
 	global_var.app_stat='refresh'
@@ -76,8 +76,8 @@ def ShowCourse():
 def check():
 	#对于自动登录，直接把上次的list调用
 	if global_var.setting['autologin']:
-		global_var.userid=global_var.setting['userinfo'][0]
-		global_var.userpass=global_var.setting['userinfo'][1]
+		global_var.userid=aeslib.decode(global_var.setting['userinfo'][0])
+		global_var.userpass=aeslib.decode(global_var.setting['userinfo'][1])
 		#print u'正在为您自动登录，请稍侯......'
 		try:
 			global_var.conn.login()

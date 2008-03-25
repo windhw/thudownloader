@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: gbk -*-
-import wx,global_var,GUItools,os
-
+import wx,aeslib,os
+import global_var,GUItools
 class LogDialog(wx.Dialog):
     def __init__(self, *args, **kwds):
         # begin wxGlade: LogDialog.__init__
@@ -93,8 +93,8 @@ class LogDialog(wx.Dialog):
             userpass=self.txtUserpass.GetValue()
             self.info=[userid,userpass]
             if self.autoSaved.GetValue():
-                global_var.setting['userinfo'][0]=userid
-                global_var.setting['userinfo'][1]=userpass
+                global_var.setting['userinfo'][0]=aeslib.encode(userid)
+                global_var.setting['userinfo'][1]=aeslib.encode(userpass)
                 global_var.setting['autologin']=True
             else:
                 global_var.setting['userinfo'][0]=''
