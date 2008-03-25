@@ -68,13 +68,11 @@ class MainFrame(wx.Frame):
         # begin wxGlade: MainFrame.__set_properties
         self.SetTitle(_(u"网络学堂"))
         self.SetSize((900, 600))
-        '''
-        self.statusBar.SetStatusWidths([-1])
         # statusbar fields
-        statusBar_fields = [_("statusBar")]
-        for i in range(len(statusBar_fields)):
-            self.statusBar.SetStatusText(statusBar_fields[i], i)
-        '''
+        
+        self.statusBar.SetFieldsCount(3)
+        self.statusBar.SetStatusWidths([1,580,-3])
+        self.statusBar.SetStatusText(u"状态：空闲",2)
         self.mainFrame_toolbar.SetToolBitmapSize((50, 50))
         self.mainFrame_toolbar.SetMargins((0, 0))
         self.mainFrame_toolbar.Realize()
@@ -139,8 +137,4 @@ class MainFrame(wx.Frame):
         sizer_3.Fit(self)
         self.Layout()
         # end wxGlade
-
-# end of class MainFrame
-
-
-
+# end of class MainFram

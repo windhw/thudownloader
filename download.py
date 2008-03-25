@@ -34,6 +34,7 @@ class MyCon:
             except:
                 print('对不起，无法登陆，程序退出\n')
                 raise 'err'
+                return
         try:
             THNSV2COOKIE=re.findall(r'THNSV2COOKIE=.*?;',rescookie)[0][13:-1]
             self.thu = ' THNSV2COOKIE=' + THNSV2COOKIE + ' '
@@ -368,7 +369,8 @@ def CreateHtml(courseindex,oldnote=[]):
         uu=data.read()
         data.close()
         uu=uu.split('''colspan="3" >''')[1]
-        uu=uu.split('</td>')[0]
+        uu=uu.split('<td colspan="4" align="center" class="textTD">')[0]
+        uu=uu[:-43]
         if not(note['note_url'] in oldnote):
             global_var.newnote[(courseindex,noteindex)]=uu
         pre+='''<div class="textbox"><a name="'''+str(noteindex)+'''"></a><div class="title"><h3>'''
@@ -462,10 +464,11 @@ def DownCourse(courseindex):
             continue
         else:
             if global_var.app_stat=='breakdown':
+                global_var.statusBar.SetStatusText(u"状态：空闲",2)
                 return
             filepath=os.path.join(download_path,list[courseindex][1].decode('gbk'),file['file_realname'].decode('gbk'))
             newfile=open(filepath,'wb')
-            global_var.statusBar.SetStatusText('正在下载'+file['file_realname'])
+            global_var.statusBar.SetStatusText('正在下载'+file['file_realname']+' ......',1)
             newfile.write(conn.open(file['file_url']).read())
             newfile.close()
             #此句刷新文件列表显示
@@ -476,20 +479,22 @@ def DownCourse(courseindex):
             #local_files中是课程索引和文件索引的元组
             global_var.print_files.append(len(global_var.local_files))
             global_var.local_files.append((courseindex,fileindex))
-    global_var.statusBar.SetStatusText('下载完成')
+    global_var.statusBar.SetStatusText('下载完成',1)
     
 
 #此函数下载所有课程的文件
 def DownAll():
+    global_var.statusBar.SetStatusText(u"状态：忙碌",2)
     list=global_var.list
     for courseindex in range(len(list)):
         if global_var.app_stat=='breakdown':
-            global_var.statusBar.SetStatusText('下载已经被中断')
+            global_var.statusBar.SetStatusText('下载已经被中断',1)
+            global_var.statusBar.SetStatusText(u"状态：空闲",2)
             return
         global_var.current_courseindex=courseindex
         global_var.current_fileindex=[]
         DownCourse(courseindex)
-        
+    global_var.statusBar.SetStatusText(u"状态：空闲",2)
 
 #此函数下载指定的文件
 def DownSingle(courseindex,fileindex):
@@ -508,10 +513,10 @@ def DownSingle(courseindex,fileindex):
             filepath=os.path.join(coursedir,list[courseindex][2][fileindex]['file_realname'].decode('gbk'))
             if os.path.exists(filepath):
                 exsit=1
-                info="正在覆盖文件"+list[courseindex][2][fileindex]['file_realname']
+                info="正在覆盖文件"+list[courseindex][2][fileindex]['file_realname']+' ......'
             else:
-                info="正在下载文件"+list[courseindex][2][fileindex]['file_realname']
-            global_var.statusBar.SetStatusText(info)
+                info="正在下载文件"+list[courseindex][2][fileindex]['file_realname']+' ......'
+            global_var.statusBar.SetStatusText(info,1)
             newfile=open(filepath,'wb')
             newfile.write(conn.open(list[courseindex][2][fileindex]['file_url']).read())
             newfile.close()
@@ -519,7 +524,7 @@ def DownSingle(courseindex,fileindex):
                 info="覆盖文件"+list[courseindex][2][fileindex]['file_realname']+"成功"
             else:
                 info="下载文件"+list[courseindex][2][fileindex]['file_realname']+"成功"
-            global_var.statusBar.SetStatusText(info)
+            global_var.statusBar.SetStatusText(info,1)
     #os.chdir(download_path)
     return
     

@@ -10,9 +10,9 @@ from shutil import copyfile
 #刷新所有文件列表，获取并创建公告网页内容
 def Refresh():
 	global_var.app_stat='refresh'
-	if 1:
-	#try:
-		global_var.statusBar.SetStatusText(u"正在获取网络学堂文件列表")
+	try:
+		global_var.statusBar.SetStatusText(u"状态：忙碌",2)
+		global_var.statusBar.SetStatusText(u"正在获取网络学堂文件列表......",1)
 		download.getCourse()
 		download.refreshFiles()
 		download.refreshNotes()
@@ -24,10 +24,12 @@ def Refresh():
 		if os.path.exists(notename):
 			global_var.html.LoadFile(notename)
 		
-	#except:
-	#	global_var.statusBar.SetStatusText(u":（ 列表刷新失败，登录认证失败")
-	#	return
-	global_var.statusBar.SetStatusText(u"列表刷新成功")
+	except:
+		global_var.statusBar.SetStatusText(u"由于网络或其他原因，列表刷新失败",1)
+		global_var.statusBar.SetStatusText(u"状态：空闲",2)
+		return
+	global_var.statusBar.SetStatusText(u"列表刷新成功",1)
+	global_var.statusBar.SetStatusText(u"状态：空闲",2)
 	saveList()
 	global_var.app_stat='Idle'
 	return True
@@ -76,7 +78,7 @@ def check():
 	if global_var.setting['autologin']:
 		global_var.userid=global_var.setting['userinfo'][0]
 		global_var.userpass=global_var.setting['userinfo'][1]
-		#print u'正在为您自动登录，请稍侯...'
+		#print u'正在为您自动登录，请稍侯......'
 		try:
 			global_var.conn.login()
 		except:
@@ -100,15 +102,21 @@ def courseSelected_cmd(event):
 
 #刷新指定课程的文件列表和公告
 def refreshCourse():
-	global_var.app_stat='refreshcourse'
-	global_var.statusBar.SetStatusText(u"正在更新本课程的课件列表和公告")
-	download.RefreshCourse(global_var.current_courseindex)
-	ShowFile()
-	global_var.current_fileindex=[]
-	#此句为了防止选定的出错
-	global_var.localsel=[]
-	global_var.statusBar.SetStatusText(u"更新完毕")
-	global_var.app_stat='Idle'
+	try:
+		global_var.app_stat='refreshcourse'
+		global_var.statusBar.SetStatusText(u"状态：忙碌",2)
+		global_var.statusBar.SetStatusText(u"正在更新本课程的课件列表和公告......",1)
+		download.RefreshCourse(global_var.current_courseindex)
+		ShowFile()
+		global_var.statusBar.SetStatusText(u"状态：空闲",2)
+		global_var.current_fileindex=[]
+		#此句为了防止选定的出错
+		global_var.localsel=[]
+		global_var.statusBar.SetStatusText(u"更新完毕",1)
+		global_var.app_stat='Idle'
+	except:
+		global_var.statusBar.SetStatusText(u"状态：空闲",2)
+		global_var.statusBar.SetStatusText(u"由于网络或其他原因，更新失败",1)
 
 
 def loadSetting():
@@ -312,11 +320,23 @@ def downAllTool_handle(event):
 		global_var.warnDialog.txtInfo.SetValue(u'对不起，后台正在运行')
 		global_var.warnDialog.ShowModal()
 def _downAll():
+    global_var.statusBar.SetStatusText(u"状态：忙碌",2)
     download.refreshFiles()
-    download.DownAll()
-    download.refreshNotes()
+    try:
+    	download.DownAll()
+    except:
+    	global_var.statusBar.SetStatusText(u"由于网络或其他原因，下载被中断",1)
+    	global_var.statusBar.SetStatusText(u"状态：空闲",2)
+    	return
+    try:
+    	download.refreshNotes()
+    except:
+    	global_var.statusBar.SetStatusText(u"由于网络或其他原因，更新文件列表被中断",1)
+    	global_var.statusBar.SetStatusText(u"状态：空闲",2)
+    	return
     saveList()
-    global_var.statusBar.SetStatusText(u"下载完成")
+    global_var.statusBar.SetStatusText(u"下载完成",1)
+    global_var.statusBar.SetStatusText(u"状态：空闲",2)
 
 
 def downAllFilesTool_handle(event): # wxGlade: MainFrame.<event_handler>
@@ -338,12 +358,19 @@ def refreshNotesTool_handle(event): # wxGlade: MainFrame.<event_handler>
         global_var.warnDialog.ShowModal()
     
 def _refreshNotes():
-    global_var.statusBar.SetStatusText(u"正在更新课程公告......")
-    download.refreshNotes()
+    global_var.statusBar.SetStatusText(u"正在更新课程公告......",1)
+    global_var.statusBar.SetStatusText(u"状态：忙碌",2)
+    try:
+    	download.refreshNotes()
+    except:
+    	global_var.statusBar.SetStatusText(u"由于网络或其他原因，更新文件列表被中断",1)
+    	global_var.statusBar.SetStatusText(u"状态：空闲",2)
+    	return
     saveList()
     ShowCourse()
     ShowFile(-1)
-    global_var.statusBar.SetStatusText(u"公告更新完毕")
+    global_var.statusBar.SetStatusText(u"公告更新完毕",1)
+    global_var.statusBar.SetStatusText(u"状态：空闲",2)
 
 
 def stopTool_handle(event): # wxGlade: MainFrame.<event_handler>
@@ -355,12 +382,14 @@ def stopTool_handle(event): # wxGlade: MainFrame.<event_handler>
         pass
 
 def _refreshAll():
-    global_var.statusBar.SetStatusText(u"正在更新课件列表")
+    global_var.statusBar.SetStatusText(u"状态：忙碌",2)
+    global_var.statusBar.SetStatusText(u"正在更新课件列表......",1)
     download.refreshFiles()
     saveList()
     ShowCourse()
     ShowFile(-1)
-    global_var.statusBar.SetStatusText(u"课件列表更新完毕")
+    global_var.statusBar.SetStatusText(u"课件列表更新完毕",1)
+    global_var.statusBar.SetStatusText(u"状态：空闲",2)
 
 
 def refreshAllTool_handle(event): # wxGlade: MainFrame.<event_handler>
@@ -377,9 +406,11 @@ def DownMarked():
 	filelist.sort()
 	courseindex=global_var.current_courseindex
 	global_var.app_stat='downmark'
+	global_var.statusBar.SetStatusText(u"状态：忙碌",2)
 	for fileindex in filelist:
 		if global_var.app_stat=='breakdown':
-		    global_var.statusBar.SetStatusText(u"下载被中断")
+		    global_var.statusBar.SetStatusText(u"下载被中断",1)
+		    global_var.statusBar.SetStatusText(u"状态：空闲",2)
 		    return
 		#本地若存在完全一样的文件进行提示
 		exists=download.IsExist(courseindex,fileindex) and (download.IsNew(courseindex,fileindex))
@@ -397,7 +428,7 @@ def DownMarked():
 					global_var.print_files.append(len(global_var.local_files))
 					global_var.local_files.append((courseindex,fileindex))
 			else:
-				global_var.statusBar.SetStatusText(u"下载已取消")
+				global_var.statusBar.SetStatusText(u"下载已取消",1)
 		else:
 			download.DownSingle(courseindex,fileindex)
 			global_var.lstLocalFile.InsertStringItem(len(global_var.local_files),global_var.list[courseindex][2][fileindex]['file_realname'])
@@ -405,6 +436,7 @@ def DownMarked():
 			global_var.print_files.append(len(global_var.local_files))
 			global_var.local_files.append((courseindex,fileindex))
 	ShowFile(courseindex)
+	global_var.statusBar.SetStatusText(u"状态：空闲",2)
 	global_var.current_fileindex=[]
 
 def btnDownMarked_handle(event):
@@ -426,6 +458,7 @@ def btnRefresh_handle(event): # wxGlade: MainFrame.<event_handler>
         global_var.warnDialog.ShowModal()
 
 def _Copy():
+    global_var.statusBar.SetStatusText(u"状态：忙碌",2)
     print global_var.print_files
     for i in global_var.print_files:
         (courseindex,fileindex)=global_var.local_files[i]
@@ -438,9 +471,10 @@ def _Copy():
         if os.path.exists(soursepath) :
             if os.path.exists(targetpath):
                 os.remove(targetpath)
-            global_var.statusBar.SetStatusText(u"正在复制文件"+filename)
+            global_var.statusBar.SetStatusText(u"正在复制文件"+filename,1)
             copyfile(soursepath,targetpath)
-            global_var.statusBar.SetStatusText(u"复制完成")
+            global_var.statusBar.SetStatusText(u"复制完成",1)
+        global_var.statusBar.SetStatusText(u"状态：空闲",2)
 def btnCopy_handle(event):
     if not global_var.theThread.isAlive():
         global_var.theThread=MyThread(_Copy,'name')
@@ -542,6 +576,7 @@ def FrameInit(frame):
 	
 	#检测是否需要自动登录
 	check()
+	
 
 
 
