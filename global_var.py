@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: gbk -*-
-import os
+import os,aeslib
 
 #定义程序运行期间的全局变量
 conn=None
@@ -21,7 +21,7 @@ localsel=[]
 local_files=[]
 print_files=[]
 file_askinfo=""
-setting={}
+setting={'userinfo':[aeslib.encode(u''),aeslib.encode(u'')],'autologin':False,'download_path':u'D:\\','print_path':u'C:\\','filter':[]}
 #注意新公告中直接显示了公告内容,格式：{(courseindex,noteindex):notecontent,...}
 newnote={}
 newfile=[]

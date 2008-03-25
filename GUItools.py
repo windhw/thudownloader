@@ -36,7 +36,7 @@ def Refresh():
 
 #此函数显示制定课程的文件列表
 def ShowFile(courseindex=0):
-	'''当要显示更新内容（courseindex=-1）时不刷新课程列表，而是显示html'''
+	'''当要显示更新内容（courseindex=-1）时显示更新的课件html'''
 	if courseindex==-1:
 		a=os.path.join(global_var.setting['download_path'],u'notes')
 		b=u'newinfo.htm'
@@ -57,7 +57,6 @@ def ShowFile(courseindex=0):
 		index = lstControl.InsertStringItem(itemindex,item['file_realname'] )
 		lstControl.SetStringItem(index, 1, item['file_size'])
 		lstControl.SetStringItem(index, 2, item['file_date'])
-		#((courseindex,index) in global_var.setting['filter'])
 		type=download.FileType(courseindex,index)
 		lstControl.SetItemImage(index,type)
 		if type==0:
@@ -120,24 +119,28 @@ def refreshCourse():
 
 
 def loadSetting():
-	f=open(os.path.join(global_var.app_path.decode('gbk'),u'setting'),'rb')
+	path=os.path.join(global_var.setting['download_path'],u'setting')
+	f=open(path,'rb')
 	global_var.setting=pickle.load(f)
 	f.close()
 
 #把程序中的设置信息保存至本地
 def saveSetting():
-	f=open(os.path.join(global_var.app_path.decode('gbk'),u'setting'),'wb')
+	path=os.path.join(global_var.setting['download_path'],u'setting')
+	f=open(path,'wb')
 	pickle.dump(global_var.setting,f,True)
 	f.close()
 
 #从本地读入设置信息
 def loadList():
-	f=open(os.path.join(global_var.app_path.decode('gbk'),u'history'),'rb')
+	path=os.path.join(global_var.setting['download_path'],u'history')
+	f=open(path,'rb')
 	global_var.list=pickle.load(f)
 	f.close()
 
 def saveList():
-	f=open(os.path.join(global_var.app_path.decode('gbk'),u'history'),'wb')
+	path=os.path.join(global_var.setting['download_path'],u'history')
+	f=open(path,'wb')
 	pickle.dump(global_var.list,f,True)
 	f.close()
 
@@ -156,7 +159,10 @@ def fileDeSelected_cmd(event):
 def markFile(event):
 	for i in global_var.current_fileindex:
 		global_var.lstRemoteFile.SetItemImage(i,0)
-		global_var.current_markfile.append(i)
+		#下面一句if判断如果选中的文件序号已经被标记了，就不用加入current_markfile，之前的一些选择标记出错的bug来源于此
+		#2008.3.25  By venture
+		if (not i in current_markfile.append(i)):
+			global_var.current_markfile.append(i)
 		if (global_var.current_courseindex,i) in global_var.setting['filter']:
 			global_var.setting['filter'].remove((global_var.current_courseindex,i))
 			saveSetting()
@@ -250,7 +256,9 @@ def localDeSelected_cmd(event):
 def printFile(event):
 	for i in global_var.localsel:
 		global_var.lstLocalFile.SetItemImage(i,0)
-		global_var.print_files.append(i)
+		#此处同上（文件列表的选择函数中）venture
+		if (not i in global_var.print_files):
+			global_var.print_files.append(i)
 
 def noprintFile(event):
 	for i in global_var.localsel:
@@ -513,19 +521,14 @@ def FrameInit(frame):
 	######################################################################################################
 	
 	
-	#保证本地的配置文件存在，如果不存在，生成默认的setting
-	if not (os.path.exists(os.path.join(global_var.app_path.decode('gbk'),u'setting')) and os.path.isfile(os.path.join(global_var.app_path.decode('gbk'),u'setting'))):
-		f=open(global_var.app_path+'setting','wb')
-		setting={'userinfo':['',''],'autologin':False,'download_path':'D:\\','print_path':'C:\\','filter':[]}
-		pickle.dump(setting,f,True)
-		f.close()
-	if not (os.path.exists(os.path.join(global_var.app_path.decode('gbk'),u'history')) and os.path.isfile(os.path.join(global_var.app_path.decode('gbk'),u'history'))):
-		f=open(os.path.join(global_var.app_path.decode('gbk'),u'history'),'wb')
-		history=[]
-		pickle.dump(history,f,True)
-		f.close()
+	#保证本地的配置、历史文件存在，如果不存在，把global_var中默认生成的setting和history存入本地
+	settingpath=os.path.join(global_var.setting['download_path'],u'setting')
+	if not (os.path.exists(settingpath) and os.path.isfile(settingpath)):
+		saveSetting()
+	historypath=os.path.join(global_var.setting['download_path'],u'history')
+	if not (os.path.exists(historypath) and os.path.isfile(historypath)):
+		saveList()
 	##################################################################################################
-	#改动
 
 	#把配置文件读入全局变量
 	loadSetting()
@@ -533,10 +536,16 @@ def FrameInit(frame):
 	
 	#开始对各控件的初始化
 	######################################################################################################
+	print type(global_var.setting['download_path'])
+	
 	global_var.logDialog.txtSetDownPath.SetValue(global_var.setting['download_path'])
 	global_var.logDialog.txtSetPrintPath.SetValue(global_var.setting['print_path'])
-	global_var.logDialog.txtUserid.SetValue(global_var.setting['userinfo'][0])
-	global_var.logDialog.txtUserpass.SetValue(global_var.setting['userinfo'][1])
+	print type(global_var.setting['userinfo'][0])
+	#设置登录对话框的初始值
+	userid=global_var.setting['userinfo'][0]
+	userpass=global_var.setting['userinfo'][1]
+	global_var.logDialog.txtUserid.SetValue(aeslib.decode(userid))
+	global_var.logDialog.txtUserpass.SetValue(aeslib.decode(userpass))
 	global_var.logDialog.autoSaved.SetValue(global_var.setting['autologin'])
 	
 	font1 = wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL, False, u"宋体")
