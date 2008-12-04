@@ -8,7 +8,7 @@ class DownApp(wx.App):
         mainFrame.Show()
         return 1
 
-# end of class DownApp
+# end of class DownApp.
 
 if __name__ == "__main__":
     import gettext
