@@ -42,11 +42,11 @@ class MainFrame(wx.Frame):
         # Tool Bar
         self.mainFrame_toolbar = wx.ToolBar(self, -1)
         self.SetToolBar(self.mainFrame_toolbar)
-        self.toolDownAll=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"下载更新"), wx.Bitmap("bitmaps\\DownAll.bmp", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"下载所有课件，更新公告"), "")
-        self.toolDownAllFiles=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"下载课件"), wx.Bitmap("bitmaps\\DownFile.bmp", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"下载所有课件"), "")
-        self.toolRefreshNotes=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"更新公告"), wx.Bitmap("bitmaps\\Notice.bmp", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"更新所有公告"), "")
-        self.tollRefreshAll=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"刷新"), wx.Bitmap("bitmaps\\Refresh.bmp", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"刷新所有课件列表"), "")
-        self.toolStop=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"停止"), wx.Bitmap("bitmaps\\Stop.bmp", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"停止"), "")
+        self.toolDownAll=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"下载更新"), wx.Bitmap("extra\\DownAll.bmp", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"下载所有课件，更新公告"), "")
+        self.toolDownAllFiles=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"下载课件"), wx.Bitmap("extra\\DownFile.bmp", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"下载所有课件"), "")
+        self.toolRefreshNotes=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"更新公告"), wx.Bitmap("extra\\Notice.bmp", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"更新所有公告"), "")
+        self.tollRefreshAll=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"刷新"), wx.Bitmap("extra\\Refresh.bmp", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"刷新所有课件列表"), "")
+        self.toolStop=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"停止"), wx.Bitmap("extra\\Stop.bmp", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"停止"), "")
         # Tool Bar end
         self.lstRemoteCourse = wx.ListCtrl(self.panel_5, -1, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
         self.html = wx.html.HtmlWindow(self.panel_6, -1)

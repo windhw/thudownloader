@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: gbk -*-
 import wx,aeslib,os
+import wx.html
 import global_var,GUItools
 class LogDialog(wx.Dialog):
     def __init__(self, *args, **kwds):
@@ -91,17 +92,31 @@ class LogDialog(wx.Dialog):
         if os.path.isdir(self.txtSetDownPath.GetValue()) and os.path.isdir(self.txtSetPrintPath.GetValue()):
             userid=self.txtUserid.GetValue()
             userpass=self.txtUserpass.GetValue()
-            self.info=[userid,userpass]
-            if self.autoSaved.GetValue():
-                global_var.setting['userinfo'][0]=aeslib.encode(userid)
-                global_var.setting['userinfo'][1]=aeslib.encode(userpass)
-                global_var.setting['autologin']=True
+            if (userid == '' or userpass=='' ):
+                global_var.warnDialog.html.SetPage(u'''
+                <html>
+                <body bgcolor="#FFEFD5">
+                <centre><font size=4><strong>用户名和密码不能为空！</font></centre>
+                
+                </body>
+                </html>
+                ''')
+                global_var.warnDialog.SetSize((300,150))
+                global_var.warnDialog.SetTitle(u"请输入用户名密码")
+                global_var.warnDialog.ShowModal()
             else:
-                global_var.setting['userinfo'][0]=''
-                global_var.setting['userinfo'][1]=''
-                global_var.setting['autologin']=False
-            GUItools.saveSetting()
-            self.EndModal(wx.ID_OK)
+                self.info=[userid,userpass]
+                if (self.autoSaved.GetValue()):
+                    global_var.setting['userinfo'][0]=aeslib.encode(userid)
+                    global_var.setting['userinfo'][1]=aeslib.encode(userpass)
+                    global_var.setting['autologin']=True
+                    GUItools.saveSetting()
+                else:
+                    global_var.setting['autologin']=False
+                    GUItools.saveSetting()
+                    global_var.setting['userinfo'][0]=aeslib.encode(userid)
+                    global_var.setting['userinfo'][1]=aeslib.encode(userpass)
+                self.EndModal(wx.ID_OK)
             return
     
     def btnSaveSet_handle(self,event):
@@ -109,120 +124,94 @@ class LogDialog(wx.Dialog):
             global_var.setting['download_path']=self.txtSetDownPath.GetValue()
             global_var.setting['print_path']=self.txtSetPrintPath.GetValue()
             GUItools.saveSetting()
-            global_var.warnDialog.txtInfo.SetValue(u'默认设置完成')
+            global_var.warnDialog.html.SetPage(u'''
+            <html>
+            <body bgcolor="#FFEFD5">
+            <centre><font size=4><strong>默认设置完成！</font></centre>
+            
+            </body>
+            </html>
+            ''')
+            global_var.warnDialog.SetSize((300,150))
+            global_var.warnDialog.SetTitle(u"设置完成")
             global_var.warnDialog.ShowModal()
         else:
-            global_var.warnDialog.txtInfo.SetValue(u'你设置的文件夹不存在，请重新设置')
+            global_var.warnDialog.html.SetPage(u'''
+            <html>
+            <body bgcolor="#FFEFD5">
+            <centre><font size=4><strong>你设置的文件夹不存在，请重新设置</font></centre>
+            
+            </body>
+            </html>
+            ''')
+            global_var.warnDialog.SetSize((300,150))
+            global_var.warnDialog.SetTitle(u"文件夹不存在!")
             global_var.warnDialog.ShowModal()
 
     def btnSetDownPath_onclick(self,event):
         if global_var.selDirDialog.ShowModal() == wx.ID_OK:
-    	    self.txtSetDownPath.SetValue(global_var.selDirDialog.GetPath())
-    	    
+            self.txtSetDownPath.SetValue(global_var.selDirDialog.GetPath())
+            
 
     def btnSetPrintPath_onclick(self,event):
         if global_var.selDirDialog.ShowModal() == wx.ID_OK:
-    	    self.txtSetPrintPath.SetValue(global_var.selDirDialog.GetPath())
+            self.txtSetPrintPath.SetValue(global_var.selDirDialog.GetPath())
 
 # end of class LogDialog
 
 
-#此询问框已经不用
-'''
-class AskDialog(wx.Dialog):
-    def __init__(self, *args, **kwds):
-        # begin wxGlade: AskDialog.__init__
-        kwds["style"] = wx.DEFAULT_DIALOG_STYLE
-        wx.Dialog.__init__(self, *args, **kwds)
-        self.txtInfo = wx.TextCtrl(self, -1, "",size=(400, 200), style=wx.TE_MULTILINE|wx.TE_READONLY)
-        self.btnYes = wx.Button(self, wx.ID_OK, u"是，我要覆盖掉")
-        self.btnNo = wx.Button(self, wx.ID_CANCEL, u"哦，那就不下了")
-
-        self.__set_properties()
-        self.__do_layout()
-        # end wxGlade
-
-    def __set_properties(self):
-        # begin wxGlade: AskDialog.__set_properties
-        self.SetTitle("要覆盖吗?")
-        self.SetSize((345, 180))
-        
-        # end wxGlade
-
-    def __do_layout(self):
-        # begin wxGlade: AskDialog.__do_layout
-        sizer_2 = wx.BoxSizer(wx.VERTICAL)
-        sizer_3 = wx.BoxSizer(wx.HORIZONTAL)
-        sizer_2.Add(self.txtInfo, 0, 0, 0)
-        sizer_3.Add(self.btnYes, 0, 0, 0)
-        sizer_3.Add(self.btnNo, 0, 0, 0)
-        sizer_2.Add(sizer_3, 1, wx.EXPAND, 0)
-        self.SetSizer(sizer_2)
-        sizer_2.Fit(self)
-        self.Layout()
-        # end wxGlade
-'''
 class WarnDialog(wx.Dialog):
-    def __init__(self, *args, **kwds):
-        # begin wxGlade: AskDialog.__init__
-        kwds["style"] = wx.DEFAULT_DIALOG_STYLE
-        wx.Dialog.__init__(self, *args, **kwds)
-        self.txtInfo = wx.TextCtrl(self, -1, "",size=(400, 200), style=wx.TE_MULTILINE|wx.TE_READONLY)
-        self.btnYes = wx.Button(self, wx.ID_OK, u"确定")
-        self.__set_properties()
-        self.__do_layout()
-        # end wxGlade
+    def __init__(self, parent):
+        wx.Dialog.__init__(self, parent, -1, '网络学堂助手',)
+                #size=(530, 400) )
 
-    def __set_properties(self):
-        # begin wxGlade: AskDialog.__set_properties
-        self.SetTitle("信息")
-        self.SetSize((345, 180))
-        
-        # end wxGlade
-
-    def __do_layout(self):
-        # begin wxGlade: AskDialog.__do_layout
-        sizer_2 = wx.BoxSizer(wx.VERTICAL)
-        sizer_3 = wx.BoxSizer(wx.HORIZONTAL)
-        sizer_2.Add(self.txtInfo, 0, 0, 0)
-        sizer_3.Add(self.btnYes, 0, 0, 0)
-        sizer_2.Add(sizer_3, 1, wx.EXPAND, 0)
-        self.SetSizer(sizer_2)
-        sizer_2.Fit(self)
+        self.html = wx.html.HtmlWindow(self)
+        self.html.SetPage("")
+        button = wx.Button(self, wx.ID_OK, "确定")
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.html, 1, wx.EXPAND|wx.ALL, 5)
+        sizer.Add(button, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        self.SetSizer(sizer)
         self.Layout()
-        # end wxGlade
+
 
 class AboutDialog(wx.Dialog):
-    def __init__(self, *args, **kwds):
-        # begin wxGlade: AboutDialog.__init__
-        kwds["style"] = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.THICK_FRAME
-        wx.Dialog.__init__(self, *args, **kwds)
-        self.label_3 = wx.StaticText(self, -1, _("Copyright(C)2008"))
-        self.label_4 = wx.StaticText(self, -1, _("haow05@gmail.com, dinstein@163.com"))
-        self.label_8 = wx.StaticText(self, -1, "")
+    text = '''
+    <html>
+    <body bgcolor="#ACAA60">
+    <center><table bgcolor="#455481" width="100%" cellspacing="0"
+    cellpadding="0" border="1">
+    <tr>
+        <td align="center"><h1>MyDownloader--下载课件的好帮手</h1></td>
+    </tr>
+    </table>
+    </center>
+    <p><b>MyDownloader</b> is a simple program written by python & wxPython and packaged by py2exe. 
+    </p>
+    <p>
+    Python available at http://www.python.org/ (Kindly warn ： not http://www.python.com，althogh that's a funny website,too.)
+    <br>wxPython available at http://www.wxpython.org/
+    </p>
 
-        self.__set_properties()
-        self.__do_layout()
-        # end wxGlade
+    <p><b>MyDownloader</b> is brought to you by
+    <b>dinstein@free</b> and <b>venture@free</b> <br><br><br><br><center>Copyright 2008-2009.</center></p>
+    </body>
+    </html>
+    '''
 
-    def __set_properties(self):
-        # begin wxGlade: AboutDialog.__set_properties
-        self.SetTitle(_(u"关于MyDownloader..."))
-        _icon = wx.EmptyIcon()
-        _icon.CopyFromBitmap(wx.Bitmap(_("MyDownloader.ico"), wx.BITMAP_TYPE_ANY))
-        self.SetIcon(_icon)
-        self.SetSize((370,150))
-        # end wxGlade
+    def __init__(self, parent):
+        wx.Dialog.__init__(self, parent, -1, '关于网络学堂助手',
+                size=(530, 400) )
 
-    def __do_layout(self):
-        # begin wxGlade: AboutDialog.__do_layout
-        sizer_11 = wx.BoxSizer(wx.VERTICAL)
-        sizer_11.Add(self.label_3, 1, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 0)
-        sizer_11.Add(self.label_4, 1, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 0)
-        sizer_11.Add(self.label_8, 1, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 0)
-        sizer_11.Add((20, 20), 1, wx.ALL, 0)
-        self.SetSizer(sizer_11)
+        html = wx.html.HtmlWindow(self)
+        html.SetPage(self.text)
+        button = wx.Button(self, wx.ID_OK, "I Know")
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(html, 1, wx.EXPAND|wx.ALL, 5)
+        sizer.Add(button, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+
+        self.SetSizer(sizer)
         self.Layout()
-        # end wxGlade
 
 # end of class AboutDialog
