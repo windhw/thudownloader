@@ -10,8 +10,8 @@ import aeslib
 #刷新所有文件列表，获取并创建公告网页内容
 def Refresh():
     global_var.app_stat='refresh'
-    #try:
-    if(1):
+    try:
+    #if(1):
         global_var.statusBar.SetStatusText(u"状态：忙碌",2)
         global_var.statusBar.SetStatusText(u"正在获取网络学堂文件列表......",1)
         download.getCourse()
@@ -26,8 +26,8 @@ def Refresh():
         if os.path.exists(notename):
             global_var.html.LoadFile(notename )
         
-    #except:
-    else:
+    except:
+    #else:
         global_var.statusBar.SetStatusText(u"由于网络或其他原因，列表刷新失败",1)
         global_var.statusBar.SetStatusText(u"状态：空闲",2)
         return
@@ -113,6 +113,7 @@ def courseSelected_cmd(event):
 
 #刷新指定课程的文件列表和公告
 def refreshCourse():
+    #if(1):
     try:
         global_var.app_stat='refreshcourse'
         global_var.statusBar.SetStatusText(u"状态：忙碌",2)
@@ -125,6 +126,7 @@ def refreshCourse():
         global_var.localsel=[]
         global_var.statusBar.SetStatusText(u"更新完毕",1)
         global_var.app_stat='Idle'
+    #else:
     except:
         global_var.statusBar.SetStatusText(u"状态：空闲",2)
         global_var.statusBar.SetStatusText(u"由于网络或其他原因，更新失败",1)
@@ -372,8 +374,10 @@ def downAllTool_handle(event):
 def _downAll():
     global_var.statusBar.SetStatusText(u"状态：忙碌",2)
     download.refreshFiles()
+    #if(1):
     try:
         download.DownAll()
+    #else:
     except:
         global_var.statusBar.SetStatusText(u"由于网络或其他原因，下载被中断",1)
         global_var.statusBar.SetStatusText(u"状态：空闲",2)
@@ -385,7 +389,7 @@ def _downAll():
         global_var.statusBar.SetStatusText(u"状态：空闲",2)
         return
     saveList()
-    global_var.statusBar.SetStatusText(u"下载完成",1)
+    global_var.statusBar.SetStatusText(u"所有的课件已经成功下载，所有课程公告已经更新",1)
     global_var.statusBar.SetStatusText(u"状态：空闲",2)
 
 

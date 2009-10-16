@@ -127,12 +127,12 @@ class LogDialog(wx.Dialog):
             global_var.warnDialog.html.SetPage(u'''
             <html>
             <body bgcolor="#FFEFD5">
-            <centre><font size=4><strong>默认设置完成！</font></centre>
+            <centre><font size=4><strong>下载文件夹和打印文件夹的设置保存成功！</font></centre>
             
             </body>
             </html>
             ''')
-            global_var.warnDialog.SetSize((300,150))
+            global_var.warnDialog.SetSize((400,150))
             global_var.warnDialog.SetTitle(u"设置完成")
             global_var.warnDialog.ShowModal()
         else:

@@ -505,7 +505,7 @@ def DownCourse(courseindex):
             print u'正在下载'+file['file_realname']+u' ......'
             newfile.write(conn.open(file['file_url']).read())
             newfile.close()
-            print u'=='+file['file_realname']+'下载完毕'
+            print u'=='+file['file_realname']+u'下载完毕'
             #此句刷新文件列表显示
             GUItools.ShowFile(courseindex)
             global_var.lstLocalFile.InsertStringItem(len(global_var.local_files),global_var.list[courseindex][2][fileindex]['file_realname'])
@@ -514,7 +514,7 @@ def DownCourse(courseindex):
             #local_files中是课程索引和文件索引的元组
             global_var.print_files.append(len(global_var.local_files))
             global_var.local_files.append((courseindex,fileindex))
-    global_var.statusBar.SetStatusText(u'下载完成',1)
+    global_var.statusBar.SetStatusText(u'<<'+list[courseindex][1]+u'>>的所有课件下载完毕',1)
     print '-'*80
     print '>>'+list[courseindex][1]+u' 的课程文件下载完毕'
     
@@ -532,6 +532,7 @@ def DownAll():
         global_var.current_fileindex=[]
         DownCourse(courseindex)
     global_var.statusBar.SetStatusText(u"状态：空闲",2)
+    global_var.statusBar.SetStatusText(u'所有课程的课件都已下载完毕',1)
 
 #此函数下载指定的文件
 def DownSingle(courseindex,fileindex):
