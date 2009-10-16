@@ -32,6 +32,7 @@ class MyCon:
                 thuwebcookie=re.findall(r'THNSV2COOKIE=.*?;',rescookie)[0][13:-1]
                 self.precookie+=('JSESSIONID=' + JSESSIONID + '; THNSV2COOKIE=' + thuwebcookie + '; ')
             except:
+                global_var.statusBar.SetStatusText('对不起，无法为您登陆',1)
                 print('对不起，无法登陆，程序退出\n')
                 raise 'err'
                 return
@@ -39,6 +40,7 @@ class MyCon:
             THNSV2COOKIE=re.findall(r'THNSV2COOKIE=.*?;',rescookie)[0][13:-1]
             self.thu = ' THNSV2COOKIE=' + THNSV2COOKIE + ' '
         except:
+            global_var.statusBar.SetStatusText('无法获得主机的确认',1)
             print('无法获得主机确认，退出\n')
             raise 'err'
         return r
@@ -75,6 +77,7 @@ class parserCourse(HTMLParser):
             #去除括号内的信息
             coursename=coursename.split('(')[0]
             coursename =  coursename.decode('utf8')
+            global_var.statusBar.SetStatusText(u"解析到课程： "+coursename,1)
             print u"解析到课程： "+coursename
             self.course.append(coursename)
             self.course.append([])
@@ -191,6 +194,7 @@ class parserNote(HTMLParser):
 #一经调用，global_var.list中将失去所有文件，公告的信息!
 def getCourse():
     global_var.app_stat='getcourse'
+    global_var.statusBar.SetStatusText(u"....开始查询你的课程列表：",1)
     print u"....开始查询你的课程列表："
     #这里先读取旧列表中的信息
     conn=global_var.conn
@@ -204,6 +208,7 @@ def getCourse():
     list=pc.list
     global_var.list=list
     global_var.app_stat='refresh'
+    global_var.statusBar.SetStatusText(u"开始根据课程列表刷新课件信息：",1)
     print u"....开始根据课程列表刷新课件信息："
     
 
@@ -246,6 +251,7 @@ def refreshFiles():
     #确定每个文件的具体信息(文件名，实际大小)
     for course in list:
         print u"-"*60
+        global_var.statusBar.SetStatusText(u"正在解析<<" + course[1]  + u">>的课件信息：",1)
         print u"....开始解析 " + course[1]  + u"的课件信息："
         print u"-"*60
         for file in course[2]:
@@ -256,6 +262,7 @@ def refreshFiles():
             data.close()
             raw_name=re.findall(r'=".*"',uu)[0][2:-1]
             raw_name = raw_name.decode('gbk')
+            global_var.statusBar.SetStatusText(u"发现文件 "+ raw_name +u'  大小：'+str(file['file_realsize']),1)
             print u"  "+ raw_name +u'  大小：'+str(file['file_realsize'])
             #找寻随机数
             #try:
@@ -309,6 +316,7 @@ def RefreshCourse(courseindex):
     global_var.app_stat="refreshcourse"
     course=global_var.list[courseindex][:2]
     print u"正在查询"+global_var.list[courseindex][1]+u"的课件"
+    global_var.statusBar.SetStatusText(u"正在查询<<"+global_var.list[courseindex][1]+u">>的课件",1)
     conn=global_var.conn
     ff=conn.open('MultiLanguage/lesson/student/download.jsp?course_id='+course[0][-5:])
     filepage=ff.read()
@@ -343,6 +351,7 @@ def RefreshCourse(courseindex):
             print '无法解析除随机号，使用原文件名，请报告这个错误'
             file['file_realname']=raw_name   
     global_var.list[courseindex]=course
+    global_var.statusBar.SetStatusText(u"<<"+global_var.list[courseindex][1]+u">>的课件查询完毕",1)
     print u">>"+global_var.list[courseindex][1]+u"的课件查询完毕"
     CreateHtml(courseindex)
     
@@ -350,6 +359,7 @@ def RefreshCourse(courseindex):
 #此函数生成指定课程的公告网页，被调用
 def CreateHtml(courseindex,oldnote=[]):
     list=global_var.list
+    global_var.statusBar.SetStatusText(u"正在查询<<" +list[courseindex][1]+u">>的课程公告...",1)
     print u"正在查询 " +list[courseindex][1]+u" 的课程公告..."
     conn=global_var.conn
     if not os.path.isdir(os.path.join(global_var.setting['download_path'],u'notes')):
@@ -405,7 +415,7 @@ def CreateHtml(courseindex,oldnote=[]):
     f.write(pre)
     f.close()
     print u">>" +list[courseindex][1]+u" 的课程公告查询完毕"
-    
+    global_var.statusBar.SetStatusText(u"<<" +list[courseindex][1]+u">>的课程公告查询完毕",1)
 
 #此函数生成显示更新信息的页面
 
@@ -413,6 +423,7 @@ def ShowNew():
     if not os.path.isdir(os.path.join(global_var.setting['download_path'],u'notes')):
         os.mkdir(os.path.join(global_var.setting['download_path'],u'notes'))
     print u'正在查询此次更新的公告....'
+    global_var.statusBar.SetStatusText( u'正在查询此次更新的公告....',1)
     list=global_var.list
     pre='''
     <html>
@@ -466,6 +477,7 @@ def ShowNew():
     f.write(pre.decode('gbk').encode('utf'))
     f.close()
     print u'>>更新的公告查询完毕'
+    global_var.statusBar.SetStatusText( u'此次更新的公告查询完毕',1)
         
         
 
@@ -489,7 +501,7 @@ def DownCourse(courseindex):
                 return
             filepath=os.path.join(download_path,list[courseindex][1],file['file_realname'])
             newfile=open(filepath,'wb')
-            global_var.statusBar.SetStatusText('正在下载'+file['file_realname']+' ......',1)
+            global_var.statusBar.SetStatusText(u'正在下载'+file['file_realname']+' ......',1)
             print u'正在下载'+file['file_realname']+u' ......'
             newfile.write(conn.open(file['file_url']).read())
             newfile.close()
@@ -502,7 +514,7 @@ def DownCourse(courseindex):
             #local_files中是课程索引和文件索引的元组
             global_var.print_files.append(len(global_var.local_files))
             global_var.local_files.append((courseindex,fileindex))
-    global_var.statusBar.SetStatusText('下载完成',1)
+    global_var.statusBar.SetStatusText(u'下载完成',1)
     print '-'*80
     print '>>'+list[courseindex][1]+u' 的课程文件下载完毕'
     

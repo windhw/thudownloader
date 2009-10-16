@@ -10,9 +10,11 @@ class DownApp(wx.App):
 
 # end of class DownApp
 
+
 if __name__ == "__main__":
     import gettext
     gettext.install("appDown") # replace with the appropriate catalog name
 
     appDown = DownApp(0)
     appDown.MainLoop()
+    

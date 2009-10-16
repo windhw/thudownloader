@@ -333,8 +333,6 @@ def logItem_handle(event): # wxGlade: MainFrame.<event_handler>
             global_var.warnDialog.SetTitle(u"后台运行警告")
             global_var.warnDialog.ShowModal()
 
-def exitItem_handle(event): 
-    global_var.main_frame.Close()
 
 def hlpItem_handle(event):
     f=open(os.path.join(global_var.app_path.decode('gbk'),u'extra/help.txt'))
@@ -347,6 +345,10 @@ def hlpItem_handle(event):
 def aboutItem_handle(event):
     ret = global_var.aboutDialog.ShowModal()
     #    "Event handler `aboutItem_handle' not implemented!"
+
+
+
+
 
 
 #此处需要多线程处理
@@ -698,14 +700,17 @@ def EventBind(frame):
     
     #菜单项绑定事件
     frame.Bind(wx.EVT_MENU, logItem_handle, frame.logItem)
-    frame.Bind(wx.EVT_MENU, exitItem_handle, frame.exitItem)
+    frame.Bind(wx.EVT_MENU, frame.exitApp, frame.exitItem)
     frame.Bind(wx.EVT_MENU, hlpItem_handle, frame.hlpItem)
     frame.Bind(wx.EVT_MENU, aboutItem_handle, frame.aboutItem)
+    frame.Bind(wx.EVT_MENU, frame.hide, frame.hideItem)
+    frame.Bind(wx.EVT_TOOL, logItem_handle, frame.toolLogin)
     frame.Bind(wx.EVT_TOOL, downAllTool_handle, frame.toolDownAll)
     frame.Bind(wx.EVT_TOOL, downAllFilesTool_handle, frame.toolDownAllFiles)
     frame.Bind(wx.EVT_TOOL, refreshNotesTool_handle, frame.toolRefreshNotes)
     frame.Bind(wx.EVT_TOOL, stopTool_handle, frame.toolStop)
-    frame.Bind(wx.EVT_TOOL, refreshAllTool_handle, frame.tollRefreshAll)    
+    frame.Bind(wx.EVT_TOOL, refreshAllTool_handle, frame.tollRefreshAll) 
+    frame.Bind(wx.EVT_TOOL, frame.hide, frame.toolHide)   
     #众按钮绑定事件
     frame.Bind(wx.EVT_BUTTON, btnDownMarked_handle,frame.btnDownMarked)
     frame.Bind(wx.EVT_BUTTON, btnRefresh_handle, frame.btnRefresh)
