@@ -448,26 +448,29 @@ def ShowNew():
     '''
     newnote=global_var.newnote
     for nt in newnote.keys():
-        note=list[nt[0]][3][nt[1]]
-        coursename=list[nt[0]][1]
-        notecontent=newnote[nt]
-        pre+='''
-        <div class="textbox"><a name="1"></a>
-        <div class="title"><h3>
-        '''
-        pre+=note['note_title']
-        pre+='''
-        </h3><div class="label">'''
-        pre+=note['note_date']+'--'+coursename.encode('gbk')
-        pre+='''
-        </div>
-        </div>
-        <div class="content">'''
-        pre+=notecontent
-        pre+='''
-        </div>
-        </div>
-        </div>'''
+        if(list[nt[0]][3]):
+            note=list[nt[0]][3][nt[1]]
+            coursename=list[nt[0]][1]
+            notecontent=newnote[nt]
+            pre+='''
+            <div class="textbox"><a name="1"></a>
+            <div class="title"><h3>
+            '''
+            pre+=note['note_title']
+            pre+='''
+            </h3><div class="label">'''
+            pre+=note['note_date']+'--'+coursename.encode('gbk')
+            pre+='''
+            </div>
+            </div>
+            <div class="content">'''
+            pre+=notecontent
+            pre+='''
+            </div>
+            </div>
+            </div>'''
+        else:
+            pass
     pre+='''
     </div>
     </body>
