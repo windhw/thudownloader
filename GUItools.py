@@ -699,6 +699,7 @@ def FrameInit(frame):
 def EventBind(frame):
     
     #菜单项绑定事件
+    frame.Bind(wx.EVT_CLOSE,frame.exitApp)
     frame.Bind(wx.EVT_MENU, logItem_handle, frame.logItem)
     frame.Bind(wx.EVT_MENU, frame.exitApp, frame.exitItem)
     frame.Bind(wx.EVT_MENU, hlpItem_handle, frame.hlpItem)

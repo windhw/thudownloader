@@ -34,6 +34,7 @@ class ddTaskBarIcon(wx.TaskBarIcon):
             self.SetIcon(self.youHaveNewIcon, u"MyDownloader-网络学堂助手 ")
         else:
             self.SetIcon(self.noNewIcon, u"网络学堂助手 没有新的课件")
+    
 
 class MainFrame(wx.Frame):
     def __init__(self, *args, **kwds):
@@ -100,7 +101,7 @@ class MainFrame(wx.Frame):
         GUItools.FrameInit(self)
         self.__set_properties()
         self.__do_layout()
-
+        
         # end wxGlade
 
     def __set_properties(self):
