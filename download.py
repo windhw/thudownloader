@@ -14,6 +14,11 @@ class MyCon:
         self.logstat=0
         
     def open(self,uri,body=None,method="GET"):
+        print "URI: "+uri
+        if self.logstat:
+                print "Log"
+        else:
+                print "un Log"
         self.conn.close()
         if(self.logstat==1):
             headers={'Cookie':self.precookie+self.thu}
@@ -97,7 +102,7 @@ class parserFile(HTMLParser):
     def handle_starttag(self,tag,attrs):
         if(self.state=='none'):
             for i in attrs:
-                if i[0]=='href' and ('/MultiLanguage/uploadFile/downloadFile_student.jsp' in i[1]):
+                if i[0]=='href' and ('/uploadFile/downloadFile_student.jsp' in i[1]):
                     url=i[1]
                     
                     self.file['file_url']=url
@@ -157,7 +162,7 @@ class parserNote(HTMLParser):
             for i in attrs:
                 if i[0]=='href' and ('note_reply.jsp?bbs_type=' in i[1]):
                     url=i[1]
-                    self.note['note_url']='/public/bbs/'+url
+                    self.note['note_url']='/MultiLanguage/public/bbs/'+url
                     self.state='title'
                     return
         if(self.state=='title_c'):
@@ -182,11 +187,11 @@ class parserNote(HTMLParser):
 
     def handle_data(self,data):
         if(self.state=='title'):
-            self.note['note_title']=data
+            self.note['note_title']=data.decode('utf-8')
         if(self.state=='author'):
-            self.note['note_author']=data
+            self.note['note_author']=data.decode('utf-8')
         if(self.state=='date'):
-            self.note['note_date']=data
+            self.note['note_date']=data.decode('utf-8')
             
 
 #getCourse函数对global_var.list初始化，加入基本的课程信息
@@ -298,8 +303,9 @@ def refreshNotes():
     for courseindex in range(len(list)):
         #以下为公告信息
         course=list[courseindex]
-        data=conn.open('/public/bbs/getnoteid_student.jsp?course_id='+course[0][-5:],method="HEAD")
+        data=conn.open('/MultiLanguage/public/bbs/getnoteid_student.jsp?course_id='+course[0][-5:],method="HEAD")
         uu=data.getheader('Location').replace('http://learn.tsinghua.edu.cn','')
+        print "UU:"+uu
         data.read()
         data.close()
         data=conn.open(uu)
@@ -318,7 +324,7 @@ def RefreshCourse(courseindex):
     print u"正在查询"+global_var.list[courseindex][1]+u"的课件"
     global_var.statusBar.SetStatusText(u"正在查询<<"+global_var.list[courseindex][1]+u">>的课件",1)
     conn=global_var.conn
-    ff=conn.open('MultiLanguage/lesson/student/download.jsp?course_id='+course[0][-5:])
+    ff=conn.open('/MultiLanguage/lesson/student/download.jsp?course_id='+course[0][-5:])
     filepage=ff.read()
     ff.close()
     pf=parserFile()
@@ -327,7 +333,7 @@ def RefreshCourse(courseindex):
     pf.feed(filepage)
     files=pf.files
     course.append(files)
-    data=conn.open('/public/bbs/getnoteid_student.jsp?course_id='+course[0][-5:],method="HEAD")
+    data=conn.open('/MultiLanguage/public/bbs/getnoteid_student.jsp?course_id='+course[0][-5:],method="HEAD")
     uu=data.getheader('Location').replace('http://learn.tsinghua.edu.cn','')
     data.read()
     data.close()
@@ -367,51 +373,58 @@ def CreateHtml(courseindex,oldnote=[]):
     
     
     f=open(os.path.join(global_var.setting['download_path'],u'notes',(list[courseindex][1]+u'.htm')),'w')
-    pre='''
+    pre=u'''
     <html>
     <head>
     <META http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>
     '''
-    pre+=list[courseindex][1].encode('gbk')
-    pre+='''
+    pre+=list[courseindex][1]
+    pre+=u'''
     </title>
     <link rel="stylesheet" href="style.css" type="text/css" media="screen">
     </head>
     <body>
     <div id="header"><a name="-1"><h1>
     '''
-    pre+=list[courseindex][1].encode('gbk')+'的课程公告'
-    pre+='''
+    pre+=list[courseindex][1]+u'的课程公告'
+    pre+=u'''
     </h1></a></div>
     <div id="list">
     <ul>
     '''
+    print "ok?"
     for noteindex in range(len(list[courseindex][3])):
         note=list[courseindex][3][noteindex]
-        pre+='''<li><a href="#'''+str(noteindex)+'''">'''+note['note_title']+'  ('+note['note_date']+')</a></li>\n'
+        pre+=u'''<li><a href="#'''+str(noteindex)+'''">'''+note['note_title']+'  ('+note['note_date']+')</a></li>\n'
     
-    pre+='''</ul></div>\n<div id="content">\n'''
+    pre+=u'''</ul></div>\n<div id="content">\n'''
+    print "ok!!"
     for noteindex in range(len(list[courseindex][3])):
         note=list[courseindex][3][noteindex]
         data=conn.open(note['note_url'])
         uu=data.read()
         data.close()
-        uu=uu.split('''colspan="3" >''')[1]
-        uu=uu.split('<td colspan="4" align="center" class="textTD">')[0]
-        uu=uu[:-43]
+        uu=uu.split('''colspan="3"''')[2]
+        uu=uu.split('class="info_b"')[0]
+        uu=uu[2:-43]
+        uu = uu.decode('utf-8')
+        print uu
         if not(note['note_url'] in oldnote):
             global_var.newnote[(courseindex,noteindex)]=uu
-        pre+='''<div class="textbox"><a name="'''+str(noteindex)+'''"></a><div class="title"><h3>'''
+        pre+=u'''<div class="textbox"><a name="'''+str(noteindex)+u'''"></a><div class="title"><h3>'''
         pre+=note['note_title']
-        pre+='''</h3><div class="label">'''+note['note_date']+'   '+note['note_author']+'''</div></div><div class="content">'''+uu
-        pre+='''
+        pre+=u'''</h3><div class="label">'''+note['note_date']+u'   '+note['note_author']+u'''</div></div><div class="content">'''+uu
+        print "OK!"
+        pre+=u'''
         </div>
         <div class="go-top"><a href="#-1">Top</a>
         </div>
         </div><br>'''
-    pre+="</div></body></html>"
-    pre=pre.decode('gbk').encode('utf-8')
+    pre+=u"</div></body></html>"
+    print "try decode"
+    pre=pre.encode('utf-8')
+    print "success"
     f.write(pre)
     f.close()
     print u">>" +list[courseindex][1]+u" 的课程公告查询完毕"
@@ -425,7 +438,7 @@ def ShowNew():
     print u'正在查询此次更新的公告....'
     global_var.statusBar.SetStatusText( u'正在查询此次更新的公告....',1)
     list=global_var.list
-    pre='''
+    pre=u'''
     <html>
     <head>
     <META http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -440,8 +453,8 @@ def ShowNew():
     for ft in global_var.newfile:
         coursename=list[ft[0]][1]
         filename=list[ft[0]][2][ft[1]]['file_realname']
-        pre+='<li>'+filename.encode('gbk')+'......'+coursename.encode('gbk')+'</li>\n'
-    pre+='''
+        pre+=u'<li>'+filename+coursename+u'</li>\n'
+    pre+=u'''
     </ul>
     </div><div id="header"><h1>更新的公告</h1></div>
     <div id="content">
@@ -452,15 +465,15 @@ def ShowNew():
             note=list[nt[0]][3][nt[1]]
             coursename=list[nt[0]][1]
             notecontent=newnote[nt]
-            pre+='''
+            pre+=u'''
             <div class="textbox"><a name="1"></a>
             <div class="title"><h3>
             '''
             pre+=note['note_title']
-            pre+='''
+            pre+=u'''
             </h3><div class="label">'''
-            pre+=note['note_date']+'--'+coursename.encode('gbk')
-            pre+='''
+            pre+=note['note_date']+'--'+coursename
+            pre+=u'''
             </div>
             </div>
             <div class="content">'''
@@ -477,7 +490,7 @@ def ShowNew():
     </html>
     '''
     f=open(os.path.join(global_var.setting['download_path'],u'notes',u'newinfo.htm'),'w')
-    f.write(pre.decode('gbk').encode('utf'))
+    f.write(pre.encode('utf-8'))
     f.close()
     print u'>>更新的公告查询完毕'
     global_var.statusBar.SetStatusText( u'此次更新的公告查询完毕',1)
