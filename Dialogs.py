@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-# -*- coding: gbk -*-
+# -*- coding: utf-8 -*-
+
 import wx,aeslib,os
 import wx.html
 import global_var,GUItools
@@ -8,28 +9,28 @@ class LogDialog(wx.Dialog):
         # begin wxGlade: LogDialog.__init__
         kwds["style"] = wx.DEFAULT_DIALOG_STYLE
         wx.Dialog.__init__(self, *args, **kwds)
-        self.sizer_13_staticbox = wx.StaticBox(self, -1, _(u"µÇÂ¼"))
-        self.sizer_10_staticbox = wx.StaticBox(self, -1, _(u"Â·¾¶ÉèÖÃ"))
-        self.label_1 = wx.StaticText(self, -1, _(u"ÉèÖÃÄ¬ÈÏÏÂÔØÎÄ¼ş¼Ğ"))
+        self.sizer_13_staticbox = wx.StaticBox(self, -1, _(u"ç™»å½•"))
+        self.sizer_10_staticbox = wx.StaticBox(self, -1, _(u"è·¯å¾„è®¾ç½®"))
+        self.label_1 = wx.StaticText(self, -1, _(u"è®¾ç½®é»˜è®¤ä¸‹è½½æ–‡ä»¶å¤¹"))
         self.txtSetDownPath = wx.TextCtrl(self, -1, "")
         self.btnSetDownPath = wx.Button(self, -1, _("......"))
-        self.label_2 = wx.StaticText(self, -1, _(u"ÉèÖÃ´òÓ¡ÎÄ¼ş¼Ğ      "))
+        self.label_2 = wx.StaticText(self, -1, _(u"è®¾ç½®æ‰“å°æ–‡ä»¶å¤¹      "))
         self.txtSetPrintPath = wx.TextCtrl(self, -1, "")
         self.btnSetPrintPath = wx.Button(self, -1, _("......"))
-        self.btnSaveSet = wx.Button(self, -1, _(u"±£´æÒÔÉÏÉèÖÃ"))
-        self.btnExitSet = wx.Button(self,wx.ID_CANCEL, _(u"ÍË³öÉèÖÃ    "))
-        self.label_3 = wx.StaticText(self, -1, _(u"ÓÃ»§Ãû"))
+        self.btnSaveSet = wx.Button(self, -1, _(u"ä¿å­˜ä»¥ä¸Šè®¾ç½®"))
+        self.btnExitSet = wx.Button(self,wx.ID_CANCEL, _(u"é€€å‡ºè®¾ç½®    "))
+        self.label_3 = wx.StaticText(self, -1, _(u"ç”¨æˆ·å"))
         self.txtUserid = wx.TextCtrl(self, -1, "")
-        self.label_4 = wx.StaticText(self, -1, _(u"ÃÜÂë   "))
+        self.label_4 = wx.StaticText(self, -1, _(u"å¯†ç    "))
         self.txtUserpass = wx.TextCtrl(self, -1, "", style=wx.TE_PASSWORD)
-        self.autoSaved = wx.CheckBox(self, -1, _(u"¼Ç×¡ÎÒ£¬ÏÂ´Î×Ô¶¯µÇÂ¼"))
-        self.btnLogin = wx.Button(self, -1, _(u"µÇÂ¼"))
-        self.btnExitLogin = wx.Button(self, wx.ID_CANCEL, _(u"ÍË³ö"))
+        self.autoSaved = wx.CheckBox(self, -1, _(u"è®°ä½æˆ‘ï¼Œä¸‹æ¬¡è‡ªåŠ¨ç™»å½•"))
+        self.btnLogin = wx.Button(self, -1, _(u"ç™»å½•"))
+        self.btnExitLogin = wx.Button(self, wx.ID_CANCEL, _(u"é€€å‡º"))
 
         self.__set_properties()
         self.__do_layout()
         ###############################################################
-        #¶Ô»°¿òµÄ°ó¶¨º¯Êı
+        #å¯¹è¯æ¡†çš„ç»‘å®šå‡½æ•°
         
         self.Bind(wx.EVT_BUTTON, self.btnLogin_handle, self.btnLogin)
         self.Bind(wx.EVT_BUTTON, self.btnSaveSet_handle, self.btnSaveSet)
@@ -39,7 +40,7 @@ class LogDialog(wx.Dialog):
 
     def __set_properties(self):
         # begin wxGlade: LogDialog.__set_properties
-        self.SetTitle(_(u"ÉèÖÃµÇÂ¼"))
+        self.SetTitle(_(u"è®¾ç½®ç™»å½•"))
         self.SetSize((380, 300))
         # end wxGlade
 
@@ -96,13 +97,13 @@ class LogDialog(wx.Dialog):
                 global_var.warnDialog.html.SetPage(u'''
                 <html>
                 <body bgcolor="#FFEFD5">
-                <centre><font size=4><strong>ÓÃ»§ÃûºÍÃÜÂë²»ÄÜÎª¿Õ£¡</font></centre>
+                <centre><font size=4><strong>ç”¨æˆ·åå’Œå¯†ç ä¸èƒ½ä¸ºç©ºï¼</font></centre>
                 
                 </body>
                 </html>
                 ''')
                 global_var.warnDialog.SetSize((300,150))
-                global_var.warnDialog.SetTitle(u"ÇëÊäÈëÓÃ»§ÃûÃÜÂë")
+                global_var.warnDialog.SetTitle(u"è¯·è¾“å…¥ç”¨æˆ·åå¯†ç ")
                 global_var.warnDialog.ShowModal()
             else:
                 self.info=[userid,userpass]
@@ -127,25 +128,25 @@ class LogDialog(wx.Dialog):
             global_var.warnDialog.html.SetPage(u'''
             <html>
             <body bgcolor="#FFEFD5">
-            <centre><font size=4><strong>ÏÂÔØÎÄ¼ş¼ĞºÍ´òÓ¡ÎÄ¼ş¼ĞµÄÉèÖÃ±£´æ³É¹¦£¡</font></centre>
+            <centre><font size=4><strong>ä¸‹è½½æ–‡ä»¶å¤¹å’Œæ‰“å°æ–‡ä»¶å¤¹çš„è®¾ç½®ä¿å­˜æˆåŠŸï¼</font></centre>
             
             </body>
             </html>
             ''')
             global_var.warnDialog.SetSize((400,150))
-            global_var.warnDialog.SetTitle(u"ÉèÖÃÍê³É")
+            global_var.warnDialog.SetTitle(u"è®¾ç½®å®Œæˆ")
             global_var.warnDialog.ShowModal()
         else:
             global_var.warnDialog.html.SetPage(u'''
             <html>
             <body bgcolor="#FFEFD5">
-            <centre><font size=4><strong>ÄãÉèÖÃµÄÎÄ¼ş¼Ğ²»´æÔÚ£¬ÇëÖØĞÂÉèÖÃ</font></centre>
+            <centre><font size=4><strong>ä½ è®¾ç½®çš„æ–‡ä»¶å¤¹ä¸å­˜åœ¨ï¼Œè¯·é‡æ–°è®¾ç½®</font></centre>
             
             </body>
             </html>
             ''')
             global_var.warnDialog.SetSize((300,150))
-            global_var.warnDialog.SetTitle(u"ÎÄ¼ş¼Ğ²»´æÔÚ!")
+            global_var.warnDialog.SetTitle(u"æ–‡ä»¶å¤¹ä¸å­˜åœ¨!")
             global_var.warnDialog.ShowModal()
 
     def btnSetDownPath_onclick(self,event):
@@ -162,12 +163,12 @@ class LogDialog(wx.Dialog):
 
 class WarnDialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, 'ÍøÂçÑ§ÌÃÖúÊÖ',)
+        wx.Dialog.__init__(self, parent, -1, u'ç½‘ç»œå­¦å ‚åŠ©æ‰‹',)
                 #size=(530, 400) )
 
         self.html = wx.html.HtmlWindow(self)
         self.html.SetPage("")
-        button = wx.Button(self, wx.ID_OK, "È·¶¨")
+        button = wx.Button(self, wx.ID_OK,u"ç¡®å®š")
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.html, 1, wx.EXPAND|wx.ALL, 5)
         sizer.Add(button, 0, wx.ALIGN_CENTER|wx.ALL, 5)
@@ -176,20 +177,20 @@ class WarnDialog(wx.Dialog):
 
 
 class AboutDialog(wx.Dialog):
-    text = '''
+    text = u'''
     <html>
     <body bgcolor="#ACAA60">
     <center><table bgcolor="#455481" width="100%" cellspacing="0"
     cellpadding="0" border="1">
     <tr>
-        <td align="center"><h1>MyDownloader--ÏÂÔØ¿Î¼şµÄºÃ°ïÊÖ</h1></td>
+        <td align="center"><h1>MyDownloader--ä¸‹è½½è¯¾ä»¶çš„å¥½å¸®æ‰‹</h1></td>
     </tr>
     </table>
     </center>
     <p><b>MyDownloader</b> is a simple program written by python & wxPython and packaged by py2exe. 
     </p>
     <p>
-    Python available at http://www.python.org/ (Kindly warn £º not http://www.python.com£¬althogh that's a funny website,too.)
+    Python available at http://www.python.org/ (Kindly warn ï¼š not http://www.python.comï¼Œalthogh that's a funny website,too.)
     <br>wxPython available at http://www.wxpython.org/
     </p>
 
@@ -200,7 +201,7 @@ class AboutDialog(wx.Dialog):
     '''
 
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, '¹ØÓÚÍøÂçÑ§ÌÃÖúÊÖ',
+        wx.Dialog.__init__(self, parent, -1, u'å…³äºç½‘ç»œå­¦å ‚åŠ©æ‰‹',
                 size=(530, 400) )
 
         html = wx.html.HtmlWindow(self)

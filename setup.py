@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: gbk -*-
+# -*- coding: utf-8 -*-
 
 from distutils.core import setup
 import py2exe
@@ -54,7 +54,7 @@ setup(
     # 'version' is given, then a versioninfo resource is built from
     # them and added to the executables.
     version = "0.5.0",
-    description = u"ÍøÂçÑ§ÌÃÖúÊÖ",
+    description = u"ç½‘ç»œå­¦å ‚åŠ©æ‰‹",
     name = "MyDownloader",
     data_files=[("extra",
                  ["extra/DownAll.png",

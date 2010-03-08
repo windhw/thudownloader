@@ -1,5 +1,7 @@
-#!C://pytho25//python.exe
-# -*- coding: gbk -*-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+
 import re,os,sys,httplib,threading,urllib,wx
 import global_var,GUItools
 from HTMLParser import HTMLParser
@@ -37,23 +39,23 @@ class MyCon:
                 thuwebcookie=re.findall(r'THNSV2COOKIE=.*?;',rescookie)[0][13:-1]
                 self.precookie+=('JSESSIONID=' + JSESSIONID + '; THNSV2COOKIE=' + thuwebcookie + '; ')
             except:
-                global_var.statusBar.SetStatusText('¶Ô²»Æğ£¬ÎŞ·¨ÎªÄúµÇÂ½',1)
-                print('¶Ô²»Æğ£¬ÎŞ·¨µÇÂ½£¬³ÌĞòÍË³ö\n')
+                global_var.statusBar.SetStatusText(u'å¯¹ä¸èµ·ï¼Œæ­¤ç”¨æˆ·å/å¯†ç æ— æ³•ç™»é™†',1)
+                print('å¯¹ä¸èµ·ï¼Œæ— æ³•ç™»é™†ï¼Œç¨‹åºé€€å‡º\n')
                 raise 'err'
                 return
         try:
             THNSV2COOKIE=re.findall(r'THNSV2COOKIE=.*?;',rescookie)[0][13:-1]
             self.thu = ' THNSV2COOKIE=' + THNSV2COOKIE + ' '
         except:
-            global_var.statusBar.SetStatusText('ÎŞ·¨»ñµÃÖ÷»úµÄÈ·ÈÏ',1)
-            print('ÎŞ·¨»ñµÃÖ÷»úÈ·ÈÏ£¬ÍË³ö\n')
+            global_var.statusBar.SetStatusText('æ— æ³•è·å¾—ä¸»æœºçš„ç¡®è®¤',1)
+            print('æ— æ³•è·å¾—ä¸»æœºç¡®è®¤ï¼Œé€€å‡º\n')
             raise 'err'
         return r
 
     def login(self):
-        params = urllib.urlencode({'userid': global_var.userid, 'userpass': global_var.userpass, 'submit1': 'µÇÂ¼'})
+        params = urllib.urlencode({'userid': global_var.userid, 'userpass': global_var.userpass, 'submit1': 'ç™»å½•'})
         #print 'Begin 1st open'
-        #params = urllib.urlencode({'userid': 'haow09', 'userpass': 'haowei1987', 'submit1': 'µÇÂ¼'})
+        #params = urllib.urlencode({'userid': 'haow09', 'userpass': 'haowei1987', 'submit1': 'ç™»å½•'})
         self.open('/use_go.jsp',body=params,method="POST")
         self.logstat=1
 
@@ -62,7 +64,7 @@ class MyCon:
         self.precookie=''
         self.thu=''
 
-#½âÎö³ö¿Î³ÌurlºÍ¿Î³ÌÃû³Æ×¢Òâ£ºlist¸ñÊ½:[['courseURL','coursename',[][]],...etc]
+#è§£æå‡ºè¯¾ç¨‹urlå’Œè¯¾ç¨‹åç§°æ³¨æ„ï¼šlistæ ¼å¼:[['courseURL','coursename',[][]],...etc]
 class parserCourse(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)
@@ -79,11 +81,11 @@ class parserCourse(HTMLParser):
     def handle_data(self,data):
         if(self.state=='ok'):
             coursename=re.findall(r'\s\S.*$',data)[0][1:]
-            #È¥³ıÀ¨ºÅÄÚµÄĞÅÏ¢
+            #å»é™¤æ‹¬å·å†…çš„ä¿¡æ¯
             coursename=coursename.split('(')[0]
             coursename =  coursename.decode('utf8')
-            global_var.statusBar.SetStatusText(u"½âÎöµ½¿Î³Ì£º "+coursename,1)
-            print u"½âÎöµ½¿Î³Ì£º "+coursename
+            global_var.statusBar.SetStatusText(u"è§£æåˆ°è¯¾ç¨‹ï¼š "+coursename,1)
+            print u"è§£æåˆ°è¯¾ç¨‹ï¼š "+coursename
             self.course.append(coursename)
             self.course.append([])
             self.course.append([])
@@ -194,14 +196,14 @@ class parserNote(HTMLParser):
             self.note['note_date']=data.decode('utf-8')
             
 
-#getCourseº¯Êı¶Ôglobal_var.list³õÊ¼»¯£¬¼ÓÈë»ù±¾µÄ¿Î³ÌĞÅÏ¢
-#¾¯¸æ£º´Ëº¯ÊıÓ¦¸Ã½öÔÚÓÃ»§µÇÂ¼»òÓ¦ÓÃ³ÌĞò³õÊ¼»¯Ê±µ÷ÓÃ
-#Ò»¾­µ÷ÓÃ£¬global_var.listÖĞ½«Ê§È¥ËùÓĞÎÄ¼ş£¬¹«¸æµÄĞÅÏ¢!
+#getCourseå‡½æ•°å¯¹global_var.liståˆå§‹åŒ–ï¼ŒåŠ å…¥åŸºæœ¬çš„è¯¾ç¨‹ä¿¡æ¯
+#è­¦å‘Šï¼šæ­¤å‡½æ•°åº”è¯¥ä»…åœ¨ç”¨æˆ·ç™»å½•æˆ–åº”ç”¨ç¨‹åºåˆå§‹åŒ–æ—¶è°ƒç”¨
+#ä¸€ç»è°ƒç”¨ï¼Œglobal_var.listä¸­å°†å¤±å»æ‰€æœ‰æ–‡ä»¶ï¼Œå…¬å‘Šçš„ä¿¡æ¯!
 def getCourse():
     global_var.app_stat='getcourse'
-    global_var.statusBar.SetStatusText(u"....¿ªÊ¼²éÑ¯ÄãµÄ¿Î³ÌÁĞ±í£º",1)
-    print u"....¿ªÊ¼²éÑ¯ÄãµÄ¿Î³ÌÁĞ±í£º"
-    #ÕâÀïÏÈ¶ÁÈ¡¾ÉÁĞ±íÖĞµÄĞÅÏ¢
+    global_var.statusBar.SetStatusText(u"....å¼€å§‹æŸ¥è¯¢ä½ çš„è¯¾ç¨‹åˆ—è¡¨ï¼š",1)
+    print u"....å¼€å§‹æŸ¥è¯¢ä½ çš„è¯¾ç¨‹åˆ—è¡¨ï¼š"
+    #è¿™é‡Œå…ˆè¯»å–æ—§åˆ—è¡¨ä¸­çš„ä¿¡æ¯
     conn=global_var.conn
     conn.login()
     ff=conn.open('/MultiLanguage/lesson/student/MyCourse.jsp?language=cn')
@@ -213,11 +215,11 @@ def getCourse():
     list=pc.list
     global_var.list=list
     global_var.app_stat='refresh'
-    global_var.statusBar.SetStatusText(u"¿ªÊ¼¸ù¾İ¿Î³ÌÁĞ±íË¢ĞÂ¿Î¼şĞÅÏ¢£º",1)
-    print u"....¿ªÊ¼¸ù¾İ¿Î³ÌÁĞ±íË¢ĞÂ¿Î¼şĞÅÏ¢£º"
+    global_var.statusBar.SetStatusText(u"å¼€å§‹æ ¹æ®è¯¾ç¨‹åˆ—è¡¨åˆ·æ–°è¯¾ä»¶ä¿¡æ¯ï¼š",1)
+    print u"....å¼€å§‹æ ¹æ®è¯¾ç¨‹åˆ—è¡¨åˆ·æ–°è¯¾ä»¶ä¿¡æ¯ï¼š"
     
 
-#´Ëº¯ÊıÔÚÒÑÓĞ¿Î³ÌĞÅÏ¢»ù´¡ÉÏË¢ĞÂglobal_var.listÖĞµÄ¿Î¼şĞÅÏ¢
+#æ­¤å‡½æ•°åœ¨å·²æœ‰è¯¾ç¨‹ä¿¡æ¯åŸºç¡€ä¸Šåˆ·æ–°global_var.listä¸­çš„è¯¾ä»¶ä¿¡æ¯
 def refreshFiles():
     global_var.app_stat='refreshfile'
     global_var.newfile=[]
@@ -228,11 +230,11 @@ def refreshFiles():
     conn=global_var.conn
     conn.login()
     pf=parserFile()
-    #´æ´¢¾ÉÎÄ¼ş
+    #å­˜å‚¨æ—§æ–‡ä»¶
     for course in prelist:
             for file in course[2]:
                 oldfile.append(file['file_url'])
-    #´ò¿ª¿Î³ÌÏÂÔØ½çÃæ£¬½âÎöÎÄ¼şµØÖ·
+    #æ‰“å¼€è¯¾ç¨‹ä¸‹è½½ç•Œé¢ï¼Œè§£ææ–‡ä»¶åœ°å€
     for course in list:
         global_var.log_num+=1
         if(global_var.log_num==2):
@@ -245,7 +247,7 @@ def refreshFiles():
         pf.feed(filepage)
         course[2]=pf.files
     
-    #°ÑĞÂµÄÎÄ¼ş¼ÓÈëĞÂÎÄ¼şÁĞ±íÖĞ
+    #æŠŠæ–°çš„æ–‡ä»¶åŠ å…¥æ–°æ–‡ä»¶åˆ—è¡¨ä¸­
     for courseindex in range(len(list)):
         course=list[courseindex]
         for fileindex in range(len(course[2])):
@@ -253,11 +255,11 @@ def refreshFiles():
             if not (file['file_url'] in oldfile):
                 global_var.newfile.append((courseindex,fileindex))
     
-    #È·¶¨Ã¿¸öÎÄ¼şµÄ¾ßÌåĞÅÏ¢(ÎÄ¼şÃû£¬Êµ¼Ê´óĞ¡)
+    #ç¡®å®šæ¯ä¸ªæ–‡ä»¶çš„å…·ä½“ä¿¡æ¯(æ–‡ä»¶åï¼Œå®é™…å¤§å°)
     for course in list:
         print u"-"*60
-        global_var.statusBar.SetStatusText(u"ÕıÔÚ½âÎö<<" + course[1]  + u">>µÄ¿Î¼şĞÅÏ¢£º",1)
-        print u"....¿ªÊ¼½âÎö " + course[1]  + u"µÄ¿Î¼şĞÅÏ¢£º"
+        global_var.statusBar.SetStatusText(u"æ­£åœ¨è§£æ<<" + course[1]  + u">>çš„è¯¾ä»¶ä¿¡æ¯ï¼š",1)
+        print u"....å¼€å§‹è§£æ " + course[1]  + u"çš„è¯¾ä»¶ä¿¡æ¯ï¼š"
         print u"-"*60
         for file in course[2]:
             data=conn.open(file['file_url'],method="HEAD")
@@ -267,9 +269,9 @@ def refreshFiles():
             data.close()
             raw_name=re.findall(r'=".*"',uu)[0][2:-1]
             raw_name = raw_name.decode('gbk')
-            global_var.statusBar.SetStatusText(u"·¢ÏÖÎÄ¼ş "+ raw_name +u'  ´óĞ¡£º'+str(file['file_realsize']),1)
-            print u"  "+ raw_name +u'  ´óĞ¡£º'+str(file['file_realsize'])
-            #ÕÒÑ°Ëæ»úÊı
+            global_var.statusBar.SetStatusText(u"å‘ç°æ–‡ä»¶ "+ raw_name +u'  å¤§å°ï¼š'+str(file['file_realsize']),1)
+            print u"  "+ raw_name +u'  å¤§å°ï¼š'+str(file['file_realsize'])
+            #æ‰¾å¯»éšæœºæ•°
             #try:
             #    file_random=re.findall(r'\S+_(\d{7,9}).\w+$',raw_name)[0]
             #except:
@@ -278,12 +280,12 @@ def refreshFiles():
             #if file_random:
             #    file['file_realname']=raw_name.replace('_'+file_random,'')
             #else:
-            #    print 'ÎŞ·¨½âÎö³ıËæ»úºÅ£¬Ê¹ÓÃÔ­ÎÄ¼şÃû£¬Çë±¨¸æÕâ¸ö´íÎó'
+            #    print 'æ— æ³•è§£æé™¤éšæœºå·ï¼Œä½¿ç”¨åŸæ–‡ä»¶åï¼Œè¯·æŠ¥å‘Šè¿™ä¸ªé”™è¯¯'
             #    file['file_realname']=raw_name
             file['file_realname']=raw_name
     ShowNew()
 
-#´Ëº¯ÊıÔÚÒÑÓĞ¿Î³ÌĞÅÏ¢µÄ»ù´¡ÉÏË¢ĞÂ¹«¸æĞÅÏ¢
+#æ­¤å‡½æ•°åœ¨å·²æœ‰è¯¾ç¨‹ä¿¡æ¯çš„åŸºç¡€ä¸Šåˆ·æ–°å…¬å‘Šä¿¡æ¯
 def refreshNotes():
     global_var.app_stat="refreshnote"
     global_var.prelist=deepcopy(global_var.list)
@@ -301,7 +303,7 @@ def refreshNotes():
 
 
     for courseindex in range(len(list)):
-        #ÒÔÏÂÎª¹«¸æĞÅÏ¢
+        #ä»¥ä¸‹ä¸ºå…¬å‘Šä¿¡æ¯
         course=list[courseindex]
         data=conn.open('/MultiLanguage/public/bbs/getnoteid_student.jsp?course_id='+course[0][-5:],method="HEAD")
         uu=data.getheader('Location').replace('http://learn.tsinghua.edu.cn','')
@@ -313,16 +315,16 @@ def refreshNotes():
         pn.feed(data.read())
         course[3]=pn.notes
         data.close()
-        #¹«¸æµØÖ·×¥È¡½áÊø
+        #å…¬å‘Šåœ°å€æŠ“å–ç»“æŸ
         CreateHtml(courseindex,oldnote)
     ShowNew()
 
-#´Ëº¯ÊıË¢ĞÂÖ¸¶¨¿Î³ÌµÄÎÄ¼şÁĞ±íºÍ¹«¸æ
+#æ­¤å‡½æ•°åˆ·æ–°æŒ‡å®šè¯¾ç¨‹çš„æ–‡ä»¶åˆ—è¡¨å’Œå…¬å‘Š
 def RefreshCourse(courseindex):
     global_var.app_stat="refreshcourse"
     course=global_var.list[courseindex][:2]
-    print u"ÕıÔÚ²éÑ¯"+global_var.list[courseindex][1]+u"µÄ¿Î¼ş"
-    global_var.statusBar.SetStatusText(u"ÕıÔÚ²éÑ¯<<"+global_var.list[courseindex][1]+u">>µÄ¿Î¼ş",1)
+    print u"æ­£åœ¨æŸ¥è¯¢"+global_var.list[courseindex][1]+u"çš„è¯¾ä»¶"
+    global_var.statusBar.SetStatusText(u"æ­£åœ¨æŸ¥è¯¢<<"+global_var.list[courseindex][1]+u">>çš„è¯¾ä»¶",1)
     conn=global_var.conn
     ff=conn.open('/MultiLanguage/lesson/student/download.jsp?course_id='+course[0][-5:])
     filepage=ff.read()
@@ -349,24 +351,24 @@ def RefreshCourse(courseindex):
         data.read()
         data.close()
         raw_name=re.findall(r'=".*"',uu)[0][2:-1]
-        #ÕÒÑ°Ëæ»úÊı
+        #æ‰¾å¯»éšæœºæ•°
         file_random=re.findall(r'\S+_(\d{7,9}).\w+$',raw_name)[0]
         if file_random:
             file['file_realname']=raw_name.replace('_'+file_random,'')
         else:
-            print 'ÎŞ·¨½âÎö³ıËæ»úºÅ£¬Ê¹ÓÃÔ­ÎÄ¼şÃû£¬Çë±¨¸æÕâ¸ö´íÎó'
+            print 'æ— æ³•è§£æé™¤éšæœºå·ï¼Œä½¿ç”¨åŸæ–‡ä»¶åï¼Œè¯·æŠ¥å‘Šè¿™ä¸ªé”™è¯¯'
             file['file_realname']=raw_name   
     global_var.list[courseindex]=course
-    global_var.statusBar.SetStatusText(u"<<"+global_var.list[courseindex][1]+u">>µÄ¿Î¼ş²éÑ¯Íê±Ï",1)
-    print u">>"+global_var.list[courseindex][1]+u"µÄ¿Î¼ş²éÑ¯Íê±Ï"
+    global_var.statusBar.SetStatusText(u"<<"+global_var.list[courseindex][1]+u">>çš„è¯¾ä»¶æŸ¥è¯¢å®Œæ¯•",1)
+    print u">>"+global_var.list[courseindex][1]+u"çš„è¯¾ä»¶æŸ¥è¯¢å®Œæ¯•"
     CreateHtml(courseindex)
     
 
-#´Ëº¯ÊıÉú³ÉÖ¸¶¨¿Î³ÌµÄ¹«¸æÍøÒ³£¬±»µ÷ÓÃ
+#æ­¤å‡½æ•°ç”ŸæˆæŒ‡å®šè¯¾ç¨‹çš„å…¬å‘Šç½‘é¡µï¼Œè¢«è°ƒç”¨
 def CreateHtml(courseindex,oldnote=[]):
     list=global_var.list
-    global_var.statusBar.SetStatusText(u"ÕıÔÚ²éÑ¯<<" +list[courseindex][1]+u">>µÄ¿Î³Ì¹«¸æ...",1)
-    print u"ÕıÔÚ²éÑ¯ " +list[courseindex][1]+u" µÄ¿Î³Ì¹«¸æ..."
+    global_var.statusBar.SetStatusText(u"æ­£åœ¨æŸ¥è¯¢<<" +list[courseindex][1]+u">>çš„è¯¾ç¨‹å…¬å‘Š...",1)
+    print u"æ­£åœ¨æŸ¥è¯¢ " +list[courseindex][1]+u" çš„è¯¾ç¨‹å…¬å‘Š..."
     conn=global_var.conn
     if not os.path.isdir(os.path.join(global_var.setting['download_path'],u'notes')):
         os.mkdir(os.path.join(global_var.setting['download_path'],u'notes'))
@@ -387,7 +389,7 @@ def CreateHtml(courseindex,oldnote=[]):
     <body>
     <div id="header"><a name="-1"><h1>
     '''
-    pre+=list[courseindex][1]+u'µÄ¿Î³Ì¹«¸æ'
+    pre+=list[courseindex][1]+u'çš„è¯¾ç¨‹å…¬å‘Š'
     pre+=u'''
     </h1></a></div>
     <div id="list">
@@ -427,26 +429,26 @@ def CreateHtml(courseindex,oldnote=[]):
     print "success"
     f.write(pre)
     f.close()
-    print u">>" +list[courseindex][1]+u" µÄ¿Î³Ì¹«¸æ²éÑ¯Íê±Ï"
-    global_var.statusBar.SetStatusText(u"<<" +list[courseindex][1]+u">>µÄ¿Î³Ì¹«¸æ²éÑ¯Íê±Ï",1)
+    print u">>" +list[courseindex][1]+u" çš„è¯¾ç¨‹å…¬å‘ŠæŸ¥è¯¢å®Œæ¯•"
+    global_var.statusBar.SetStatusText(u"<<" +list[courseindex][1]+u">>çš„è¯¾ç¨‹å…¬å‘ŠæŸ¥è¯¢å®Œæ¯•",1)
 
-#´Ëº¯ÊıÉú³ÉÏÔÊ¾¸üĞÂĞÅÏ¢µÄÒ³Ãæ
+#æ­¤å‡½æ•°ç”Ÿæˆæ˜¾ç¤ºæ›´æ–°ä¿¡æ¯çš„é¡µé¢
 
 def ShowNew():
     if not os.path.isdir(os.path.join(global_var.setting['download_path'],u'notes')):
         os.mkdir(os.path.join(global_var.setting['download_path'],u'notes'))
-    print u'ÕıÔÚ²éÑ¯´Ë´Î¸üĞÂµÄ¹«¸æ....'
-    global_var.statusBar.SetStatusText( u'ÕıÔÚ²éÑ¯´Ë´Î¸üĞÂµÄ¹«¸æ....',1)
+    print u'æ­£åœ¨æŸ¥è¯¢æ­¤æ¬¡æ›´æ–°çš„å…¬å‘Š....'
+    global_var.statusBar.SetStatusText( u'æ­£åœ¨æŸ¥è¯¢æ­¤æ¬¡æ›´æ–°çš„å…¬å‘Š....',1)
     list=global_var.list
     pre=u'''
     <html>
     <head>
     <META http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>¸üĞÂ</title>
+    <title>æ›´æ–°</title>
     <link rel="stylesheet" href="style.css" type="text/css" media="screen">
     </head>
     <body>
-    <div id="header"><h1>¸üĞÂµÄÎÄ¼ş</h1></div>
+    <div id="header"><h1>æ›´æ–°çš„æ–‡ä»¶</h1></div>
     <div id="content">
     <ul>
     '''
@@ -456,7 +458,7 @@ def ShowNew():
         pre+=u'<li>'+filename+coursename+u'</li>\n'
     pre+=u'''
     </ul>
-    </div><div id="header"><h1>¸üĞÂµÄ¹«¸æ</h1></div>
+    </div><div id="header"><h1>æ›´æ–°çš„å…¬å‘Š</h1></div>
     <div id="content">
     '''
     newnote=global_var.newnote
@@ -492,12 +494,12 @@ def ShowNew():
     f=open(os.path.join(global_var.setting['download_path'],u'notes',u'newinfo.htm'),'w')
     f.write(pre.encode('utf-8'))
     f.close()
-    print u'>>¸üĞÂµÄ¹«¸æ²éÑ¯Íê±Ï'
-    global_var.statusBar.SetStatusText( u'´Ë´Î¸üĞÂµÄ¹«¸æ²éÑ¯Íê±Ï',1)
+    print u'>>æ›´æ–°çš„å…¬å‘ŠæŸ¥è¯¢å®Œæ¯•'
+    global_var.statusBar.SetStatusText( u'æ­¤æ¬¡æ›´æ–°çš„å…¬å‘ŠæŸ¥è¯¢å®Œæ¯•',1)
         
         
 
-#´Ëº¯ÊıÏÂÔØÖ¸¶¨¿Î³ÌµÄÎÄ¼ş
+#æ­¤å‡½æ•°ä¸‹è½½æŒ‡å®šè¯¾ç¨‹çš„æ–‡ä»¶
 def DownCourse(courseindex):
     global_var.app_stat='downcourse'
     conn=global_var.conn
@@ -513,44 +515,44 @@ def DownCourse(courseindex):
             continue
         else:
             if global_var.app_stat=='breakdown':
-                global_var.statusBar.SetStatusText(u"×´Ì¬£º¿ÕÏĞ",2)
+                global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šç©ºé—²",2)
                 return
             filepath=os.path.join(download_path,list[courseindex][1],file['file_realname'])
             newfile=open(filepath,'wb')
-            global_var.statusBar.SetStatusText(u'ÕıÔÚÏÂÔØ'+file['file_realname']+' ......',1)
-            print u'ÕıÔÚÏÂÔØ'+file['file_realname']+u' ......'
+            global_var.statusBar.SetStatusText(u'æ­£åœ¨ä¸‹è½½'+file['file_realname']+' ......',1)
+            print u'æ­£åœ¨ä¸‹è½½'+file['file_realname']+u' ......'
             newfile.write(conn.open(file['file_url']).read())
             newfile.close()
-            print u'=='+file['file_realname']+u'ÏÂÔØÍê±Ï'
-            #´Ë¾äË¢ĞÂÎÄ¼şÁĞ±íÏÔÊ¾
+            print u'=='+file['file_realname']+u'ä¸‹è½½å®Œæ¯•'
+            #æ­¤å¥åˆ·æ–°æ–‡ä»¶åˆ—è¡¨æ˜¾ç¤º
             GUItools.ShowFile(courseindex)
             global_var.lstLocalFile.InsertStringItem(len(global_var.local_files),global_var.list[courseindex][2][fileindex]['file_realname'])
             global_var.lstLocalFile.SetItemImage(len(global_var.local_files),0)
-            #×¢Òâprint_fileÁĞ±íÖĞÖ»ÓĞË÷ÒıÃ»ÓĞÆäËûĞÅÏ¢
-            #local_filesÖĞÊÇ¿Î³ÌË÷ÒıºÍÎÄ¼şË÷ÒıµÄÔª×é
+            #æ³¨æ„print_fileåˆ—è¡¨ä¸­åªæœ‰ç´¢å¼•æ²¡æœ‰å…¶ä»–ä¿¡æ¯
+            #local_filesä¸­æ˜¯è¯¾ç¨‹ç´¢å¼•å’Œæ–‡ä»¶ç´¢å¼•çš„å…ƒç»„
             global_var.print_files.append(len(global_var.local_files))
             global_var.local_files.append((courseindex,fileindex))
-    global_var.statusBar.SetStatusText(u'<<'+list[courseindex][1]+u'>>µÄËùÓĞ¿Î¼şÏÂÔØÍê±Ï',1)
+    global_var.statusBar.SetStatusText(u'<<'+list[courseindex][1]+u'>>çš„æ‰€æœ‰è¯¾ä»¶ä¸‹è½½å®Œæ¯•',1)
     print '-'*80
-    print '>>'+list[courseindex][1]+u' µÄ¿Î³ÌÎÄ¼şÏÂÔØÍê±Ï'
+    print '>>'+list[courseindex][1]+u' çš„è¯¾ç¨‹æ–‡ä»¶ä¸‹è½½å®Œæ¯•'
     
 
-#´Ëº¯ÊıÏÂÔØËùÓĞ¿Î³ÌµÄÎÄ¼ş
+#æ­¤å‡½æ•°ä¸‹è½½æ‰€æœ‰è¯¾ç¨‹çš„æ–‡ä»¶
 def DownAll():
-    global_var.statusBar.SetStatusText(u"×´Ì¬£ºÃ¦Âµ",2)
+    global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šå¿™ç¢Œ",2)
     list=global_var.list
     for courseindex in range(len(list)):
         if global_var.app_stat=='breakdown':
-            global_var.statusBar.SetStatusText('ÏÂÔØÒÑ¾­±»ÖĞ¶Ï',1)
-            global_var.statusBar.SetStatusText(u"×´Ì¬£º¿ÕÏĞ",2)
+            global_var.statusBar.SetStatusText(u'ä¸‹è½½å·²ç»è¢«ä¸­æ–­',1)
+            global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šç©ºé—²",2)
             return
         global_var.current_courseindex=courseindex
         global_var.current_fileindex=[]
         DownCourse(courseindex)
-    global_var.statusBar.SetStatusText(u"×´Ì¬£º¿ÕÏĞ",2)
-    global_var.statusBar.SetStatusText(u'ËùÓĞ¿Î³ÌµÄ¿Î¼ş¶¼ÒÑÏÂÔØÍê±Ï',1)
+    global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šç©ºé—²",2)
+    global_var.statusBar.SetStatusText(u'æ‰€æœ‰è¯¾ç¨‹çš„è¯¾ä»¶éƒ½å·²ä¸‹è½½å®Œæ¯•',1)
 
-#´Ëº¯ÊıÏÂÔØÖ¸¶¨µÄÎÄ¼ş
+#æ­¤å‡½æ•°ä¸‹è½½æŒ‡å®šçš„æ–‡ä»¶
 def DownSingle(courseindex,fileindex):
     conn=global_var.conn
     list=global_var.list
@@ -562,14 +564,14 @@ def DownSingle(courseindex,fileindex):
             coursedir=os.path.join(download_path,list[courseindex][1])
             if (not os.path.exists(coursedir)):
                 os.mkdir(coursedir)
-            #´Ë´¦µÄ×Ö·û±àÂëÍ³Ò»³Éunicode£¬·ÀÖ¹³ö´í
+            #æ­¤å¤„çš„å­—ç¬¦ç¼–ç ç»Ÿä¸€æˆunicodeï¼Œé˜²æ­¢å‡ºé”™
             os.chdir(download_path+u'\\'+list[courseindex][1])
             filepath = os.path.join(coursedir,list[courseindex][2][fileindex]['file_realname'])
             if os.path.exists(filepath):
                 exsit=1
-                info=u"ÕıÔÚ¸²¸ÇÎÄ¼ş"+list[courseindex][2][fileindex]['file_realname']+u' ......'
+                info=u"æ­£åœ¨è¦†ç›–æ–‡ä»¶"+list[courseindex][2][fileindex]['file_realname']+u' ......'
             else:
-                info=u"ÕıÔÚÏÂÔØÎÄ¼ş"+list[courseindex][2][fileindex]['file_realname']+u' ......'
+                info=u"æ­£åœ¨ä¸‹è½½æ–‡ä»¶"+list[courseindex][2][fileindex]['file_realname']+u' ......'
             print info
             global_var.statusBar.SetStatusText(info,1)
             
@@ -577,16 +579,16 @@ def DownSingle(courseindex,fileindex):
             newfile.write(conn.open(list[courseindex][2][fileindex]['file_url']).read())
             newfile.close()
             if exsit:
-                info=u"¸²¸ÇÎÄ¼ş"+list[courseindex][2][fileindex]['file_realname']+u"³É¹¦"
+                info=u"è¦†ç›–æ–‡ä»¶"+list[courseindex][2][fileindex]['file_realname']+u"æˆåŠŸ"
             else:
-                info=u"ÏÂÔØÎÄ¼ş"+list[courseindex][2][fileindex]['file_realname']+u"³É¹¦"
+                info=u"ä¸‹è½½æ–‡ä»¶"+list[courseindex][2][fileindex]['file_realname']+u"æˆåŠŸ"
             print ">>"+info
             global_var.statusBar.SetStatusText(info,1)
     #os.chdir(download_path)
     return
     
 
-#´Ëº¯ÊıÅĞ¶ÏÁĞ±íÖĞµÄÎÄ¼şÊÇ·ñ´æÔÚÓÚÄ¬ÈÏÎÄ¼ş¼ĞÖĞ
+#æ­¤å‡½æ•°åˆ¤æ–­åˆ—è¡¨ä¸­çš„æ–‡ä»¶æ˜¯å¦å­˜åœ¨äºé»˜è®¤æ–‡ä»¶å¤¹ä¸­
 def IsExist(courseindex,fileindex):
     list=global_var.list
     download_path=global_var.setting['download_path']
@@ -597,7 +599,7 @@ def IsExist(courseindex,fileindex):
         return False
     
 
-#´Ëº¯ÊıÅĞ¶ÏÎÄ¼ş´óĞ¡ÊÇ·ñÆ¥Åä
+#æ­¤å‡½æ•°åˆ¤æ–­æ–‡ä»¶å¤§å°æ˜¯å¦åŒ¹é…
 def IsNew(courseindex,fileindex):
     list=global_var.list
     download_path=global_var.setting['download_path']
@@ -608,7 +610,7 @@ def IsNew(courseindex,fileindex):
         return False
     
 
-#È·¶¨ÎÄ¼şµÄÏÔÊ¾Àà±ğ£º´ıÏÂÔØ£¬²»ÏÂÔØ...etc
+#ç¡®å®šæ–‡ä»¶çš„æ˜¾ç¤ºç±»åˆ«ï¼šå¾…ä¸‹è½½ï¼Œä¸ä¸‹è½½...etc
 def FileType(courseindex,fileindex):
     if(IsExist(courseindex,fileindex) and IsNew(courseindex,fileindex)):
         return 2

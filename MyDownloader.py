@@ -1,5 +1,7 @@
-import MainFrame,wx
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
+import MainFrame,wx
 class DownApp(wx.App):
     def OnInit(self):
         wx.InitAllImageHandlers()

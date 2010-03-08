@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+
 # use python-crypto pkg's AES object
 # by sylecn@yahoo.com.cn
 

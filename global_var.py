@@ -1,8 +1,10 @@
 #!/usr/bin/env python
-# -*- coding: gbk -*-
+# -*- coding: utf-8 -*-
+
+
 import os,aeslib
 
-#¶¨Òå³ÌĞòÔËĞĞÆÚ¼äµÄÈ«¾Ö±äÁ¿
+#å®šä¹‰ç¨‹åºè¿è¡ŒæœŸé—´çš„å…¨å±€å˜é‡
 conn=None
 app_stat="Idle"
 log_stat='no'
@@ -21,9 +23,9 @@ localsel=[]
 local_files=[]
 print_files=[]
 file_askinfo=""
-setting={'userinfo':[u'',u''],'autologin':False,'download_path':u'D:\\','print_path':u'C:\\','filter':[]}
+setting={'userinfo':[u'',u''],'autologin':False,'download_path':u'C:\\','print_path':u'C:\\','filter':[]}
 #setting={'userinfo':[u'',u''],'autologin':False,'download_path':u'D:\\','print_path':u'C:\\','filter':[]}
-#×¢ÒâĞÂ¹«¸æÖĞÖ±½ÓÏÔÊ¾ÁË¹«¸æÄÚÈİ,¸ñÊ½£º{(courseindex,noteindex):notecontent,...}
+#æ³¨æ„æ–°å…¬å‘Šä¸­ç›´æ¥æ˜¾ç¤ºäº†å…¬å‘Šå†…å®¹,æ ¼å¼ï¼š{(courseindex,noteindex):notecontent,...}
 newnote={}
 newfile=[]
 

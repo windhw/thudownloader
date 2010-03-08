@@ -1,19 +1,20 @@
 #!/usr/bin/env python
-# -*- coding: gbk -*-
+# -*- coding: utf-8 -*-
 
-#ÎªGUIÌá¹©±ØÒªµÄÀàºÍº¯Êı
+
+#ä¸ºGUIæä¾›å¿…è¦çš„ç±»å’Œå‡½æ•°
 import global_var,download,Dialogs
 import wx,os,sys,threading
 import cPickle as pickle
 from shutil import copyfile
 import aeslib
-#Ë¢ĞÂËùÓĞÎÄ¼şÁĞ±í£¬»ñÈ¡²¢´´½¨¹«¸æÍøÒ³ÄÚÈİ
+#åˆ·æ–°æ‰€æœ‰æ–‡ä»¶åˆ—è¡¨ï¼Œè·å–å¹¶åˆ›å»ºå…¬å‘Šç½‘é¡µå†…å®¹
 def Refresh():
     global_var.app_stat='refresh'
     try:
     #if(1):
-        global_var.statusBar.SetStatusText(u"×´Ì¬£ºÃ¦Âµ",2)
-        global_var.statusBar.SetStatusText(u"ÕıÔÚ»ñÈ¡ÍøÂçÑ§ÌÃÎÄ¼şÁĞ±í......",1)
+        global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šå¿™ç¢Œ",2)
+        global_var.statusBar.SetStatusText(u"æ­£åœ¨è·å–ç½‘ç»œå­¦å ‚æ–‡ä»¶åˆ—è¡¨......",1)
         download.getCourse()
         download.refreshFiles()
         download.refreshNotes()
@@ -28,18 +29,18 @@ def Refresh():
         
     except:
     #else:
-        global_var.statusBar.SetStatusText(u"ÓÉÓÚÍøÂç»òÆäËûÔ­Òò£¬ÁĞ±íË¢ĞÂÊ§°Ü",1)
-        global_var.statusBar.SetStatusText(u"×´Ì¬£º¿ÕÏĞ",2)
+        global_var.statusBar.SetStatusText(u"ç”±äºç½‘ç»œæˆ–å…¶ä»–åŸå› ï¼Œåˆ—è¡¨åˆ·æ–°å¤±è´¥",1)
+        global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šç©ºé—²",2)
         return
-    global_var.statusBar.SetStatusText(u"ÁĞ±íË¢ĞÂ³É¹¦",1)
-    global_var.statusBar.SetStatusText(u"×´Ì¬£º¿ÕÏĞ",2)
+    global_var.statusBar.SetStatusText(u"åˆ—è¡¨åˆ·æ–°æˆåŠŸ",1)
+    global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šç©ºé—²",2)
     saveList()
     global_var.app_stat='Idle'
     return True
 
-#´Ëº¯ÊıÏÔÊ¾ÖÆ¶¨¿Î³ÌµÄÎÄ¼şÁĞ±í
+#æ­¤å‡½æ•°æ˜¾ç¤ºåˆ¶å®šè¯¾ç¨‹çš„æ–‡ä»¶åˆ—è¡¨
 def ShowFile(courseindex=0):
-    '''µ±ÒªÏÔÊ¾¸üĞÂÄÚÈİ£¨courseindex=-1£©Ê±ÏÔÊ¾¸üĞÂµÄ¿Î¼şhtml'''
+    '''å½“è¦æ˜¾ç¤ºæ›´æ–°å†…å®¹ï¼ˆcourseindex=-1ï¼‰æ—¶æ˜¾ç¤ºæ›´æ–°çš„è¯¾ä»¶html'''
     if courseindex==-1:
         a=os.path.join(global_var.setting['download_path'],u'notes')
         b=u'newinfo.htm'
@@ -72,7 +73,7 @@ def ShowFile(courseindex=0):
         if type==0:
             global_var.current_markfile.append(index)
 
-#´Ëº¯ÊıÏÔÊ¾¿Î³ÌÁĞ±í
+#æ­¤å‡½æ•°æ˜¾ç¤ºè¯¾ç¨‹åˆ—è¡¨
 def ShowCourse():
     lstControl = global_var.lstRemoteCourse
     lstControl.DeleteAllItems()
@@ -81,15 +82,15 @@ def ShowCourse():
         item=global_var.list[itemindex]
         lstControl.InsertStringItem(itemindex+1,item[1])
 
-#´Ëº¯Êı¼ì²éÊÇ·ñ×Ô¶¯µÇÂ¼
+#æ­¤å‡½æ•°æ£€æŸ¥æ˜¯å¦è‡ªåŠ¨ç™»å½•
 def check():
-    #¶ÔÓÚ×Ô¶¯µÇÂ¼£¬Ö±½Ó°ÑÉÏ´ÎµÄlistµ÷ÓÃ
+    #å¯¹äºè‡ªåŠ¨ç™»å½•ï¼Œç›´æ¥æŠŠä¸Šæ¬¡çš„listè°ƒç”¨
     if global_var.setting['autologin']:
         global_var.userid=aeslib.decode(global_var.setting['userinfo'][0])
         global_var.userpass=aeslib.decode(global_var.setting['userinfo'][1])
         #global_var.userid= global_var.setting['userinfo'][0] 
         #global_var.userpass= global_var.setting['userinfo'][1] 
-        #print u'ÕıÔÚÎªÄú×Ô¶¯µÇÂ¼£¬ÇëÉÔºî......'
+        #print u'æ­£åœ¨ä¸ºæ‚¨è‡ªåŠ¨ç™»å½•ï¼Œè¯·ç¨ä¾¯......'
         try:
             global_var.conn.login()
         except:
@@ -102,34 +103,34 @@ def check():
     return
     
 
-#¶Ô¿Î³ÌÁĞ±í¿òµÄÏìÓ¦
+#å¯¹è¯¾ç¨‹åˆ—è¡¨æ¡†çš„å“åº”
 def courseSelected_cmd(event):
-    '''×¢Òâ´Ë´¦µÄÊµ¼Ê¿Î³ÌindexÊÇm_itemIndex-1£¬ÒòÎª¿Î³ÌµÚÒ»ÏîÏÔÊ¾µÄÊÇ¸üĞÂ'''
+    '''æ³¨æ„æ­¤å¤„çš„å®é™…è¯¾ç¨‹indexæ˜¯m_itemIndex-1ï¼Œå› ä¸ºè¯¾ç¨‹ç¬¬ä¸€é¡¹æ˜¾ç¤ºçš„æ˜¯æ›´æ–°'''
     index=event.m_itemIndex
     global_var.current_courseindex=index-1
     global_var.current_fileindex=[]
     global_var.localsel=[]
     ShowFile(index-1)
 
-#Ë¢ĞÂÖ¸¶¨¿Î³ÌµÄÎÄ¼şÁĞ±íºÍ¹«¸æ
+#åˆ·æ–°æŒ‡å®šè¯¾ç¨‹çš„æ–‡ä»¶åˆ—è¡¨å’Œå…¬å‘Š
 def refreshCourse():
     #if(1):
     try:
         global_var.app_stat='refreshcourse'
-        global_var.statusBar.SetStatusText(u"×´Ì¬£ºÃ¦Âµ",2)
-        global_var.statusBar.SetStatusText(u"ÕıÔÚ¸üĞÂ±¾¿Î³ÌµÄ¿Î¼şÁĞ±íºÍ¹«¸æ......",1)
+        global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šå¿™ç¢Œ",2)
+        global_var.statusBar.SetStatusText(u"æ­£åœ¨æ›´æ–°æœ¬è¯¾ç¨‹çš„è¯¾ä»¶åˆ—è¡¨å’Œå…¬å‘Š......",1)
         download.RefreshCourse(global_var.current_courseindex)
         ShowFile()
-        global_var.statusBar.SetStatusText(u"×´Ì¬£º¿ÕÏĞ",2)
+        global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šç©ºé—²",2)
         global_var.current_fileindex=[]
-        #´Ë¾äÎªÁË·ÀÖ¹Ñ¡¶¨µÄ³ö´í
+        #æ­¤å¥ä¸ºäº†é˜²æ­¢é€‰å®šçš„å‡ºé”™
         global_var.localsel=[]
-        global_var.statusBar.SetStatusText(u"¸üĞÂÍê±Ï",1)
+        global_var.statusBar.SetStatusText(u"æ›´æ–°å®Œæ¯•",1)
         global_var.app_stat='Idle'
     #else:
     except:
-        global_var.statusBar.SetStatusText(u"×´Ì¬£º¿ÕÏĞ",2)
-        global_var.statusBar.SetStatusText(u"ÓÉÓÚÍøÂç»òÆäËûÔ­Òò£¬¸üĞÂÊ§°Ü",1)
+        global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šç©ºé—²",2)
+        global_var.statusBar.SetStatusText(u"ç”±äºç½‘ç»œæˆ–å…¶ä»–åŸå› ï¼Œæ›´æ–°å¤±è´¥",1)
 
 
 def loadSetting():
@@ -142,7 +143,7 @@ def loadSetting():
         saveSetting()
 
 
-#°Ñ³ÌĞòÖĞµÄÉèÖÃĞÅÏ¢±£´æÖÁ±¾µØ
+#æŠŠç¨‹åºä¸­çš„è®¾ç½®ä¿¡æ¯ä¿å­˜è‡³æœ¬åœ°
 def saveSetting():
     path=os.path.join(os.path.split( os.path.realpath( sys.argv[0] ) )[0].decode('gbk'),u'setting')
     f=open(path,'wb')
@@ -150,21 +151,32 @@ def saveSetting():
     f.close()
 
 
-#´Ó±¾µØ¶ÁÈëÉèÖÃĞÅÏ¢
-def loadList():
-    path=os.path.join(global_var.setting['download_path'],u'history')
-    f=open(path,'rb')
-    global_var.list=pickle.load(f)
-    f.close()
+#ä»æœ¬åœ°è¯»å…¥è®¾ç½®ä¿¡æ¯
+
+#ä»æœ¬åœ°è¯»å…¥è®¾ç½®ä¿¡æ¯
+def loadList(first_use = 1):
+    rt = 0
+    path=os.path.join(global_var.setting['download_path'],u'.MyDownloader_history')
+    if(os.path.exists(path)):
+        rt=0
+        f=open(path,'rb')
+        global_var.list=pickle.load(f)
+        f.close()
+    else:
+        rt = 1
+    return rt
 
 def saveList():
-    path=os.path.join(global_var.setting['download_path'],u'history')
-    f=open(path,'wb')
-    pickle.dump(global_var.list,f,True)
-    f.close()
+    path=os.path.join(global_var.setting['download_path'],u'.MyDownloader_history')
+    try:
+        f=open(path,'wb')
+        pickle.dump(global_var.list,f,True)
+        f.close()
+    except:
+        pass
 
 ################################################################################################################
-#¶ÔÎÄ¼şÁĞ±íµÄÒ»ÏµÁĞÏìÓ¦
+#å¯¹æ–‡ä»¶åˆ—è¡¨çš„ä¸€ç³»åˆ—å“åº”
 ################################################################################################################
 def fileSelected_cmd(event):
     global_var.current_fileindex.append(event.GetIndex())
@@ -178,9 +190,9 @@ def fileDeSelected_cmd(event):
 def markFile(event):
     for i in global_var.current_fileindex:
         global_var.lstRemoteFile.SetItemImage(i,0)
-        #ÏÂÃæÒ»¾äifÅĞ¶ÏÈç¹ûÑ¡ÖĞµÄÎÄ¼şĞòºÅÒÑ¾­±»±ê¼ÇÁË£¬¾Í²»ÓÃ¼ÓÈëcurrent_markfile£¬Ö®Ç°µÄÒ»Ğ©Ñ¡Ôñ±ê¼Ç³ö´íµÄbugÀ´Ô´ÓÚ´Ë
+        #ä¸‹é¢ä¸€å¥ifåˆ¤æ–­å¦‚æœé€‰ä¸­çš„æ–‡ä»¶åºå·å·²ç»è¢«æ ‡è®°äº†ï¼Œå°±ä¸ç”¨åŠ å…¥current_markfileï¼Œä¹‹å‰çš„ä¸€äº›é€‰æ‹©æ ‡è®°å‡ºé”™çš„bugæ¥æºäºæ­¤
         #2008.3.25  By venture
-        #print u"µ±Ç°£º"
+        #print u"å½“å‰ï¼š"
         #print global_var.current_markfile
         if (not i in global_var.current_markfile):
             global_var.current_markfile.append(i)
@@ -228,41 +240,41 @@ def defilterFile(event):
 def lstRemoteFile_RightClick(event):
     lstControl = global_var.lstRemoteFile
     
-    #Éú³Éµ¯³ö²Ëµ¥
+    #ç”Ÿæˆå¼¹å‡ºèœå•
     if global_var.current_fileindex:
         popmenu = wx.Menu()
         menu_id_mark = wx.NewId()
-        popmenu.Append(menu_id_mark, u"ÉèÖÃÏÂÔØ±ê¼Ç")
+        popmenu.Append(menu_id_mark, u"è®¾ç½®ä¸‹è½½æ ‡è®°")
         menu_id_demark=wx.NewId()
-        popmenu.Append(menu_id_demark, u"È¡ÏûÏÂÔØ±ê¼Ç")
+        popmenu.Append(menu_id_demark, u"å–æ¶ˆä¸‹è½½æ ‡è®°")
 
         menu_id_filter=wx.NewId()
-        popmenu.Append(menu_id_filter, u"ÆÁ±Î´Ë¿Î¼ş")
+        popmenu.Append(menu_id_filter, u"å±è”½æ­¤è¯¾ä»¶")
         
         menu_id_defilter=wx.NewId()
-        popmenu.Append(menu_id_defilter, u"È¡Ïû¶Ô¿Î¼şµÄÆÁ±Î")
+        popmenu.Append(menu_id_defilter, u"å–æ¶ˆå¯¹è¯¾ä»¶çš„å±è”½")
         menu_id_refresh = wx.NewId()
-        popmenu.Append(menu_id_refresh, u"Ë¢ĞÂ±¾¿Î³ÌÁĞ±í")
+        popmenu.Append(menu_id_refresh, u"åˆ·æ–°æœ¬è¯¾ç¨‹åˆ—è¡¨")
         
         global_var.main_frame.Bind(wx.EVT_MENU,markFile, id=menu_id_mark)
         global_var.main_frame.Bind(wx.EVT_MENU,demarkFile, id=menu_id_demark)
         global_var.main_frame.Bind(wx.EVT_MENU,filterFile, id=menu_id_filter)
         global_var.main_frame.Bind(wx.EVT_MENU,defilterFile, id=menu_id_defilter)
-        #menu_id_refreshºÍbtnRefresh°´Å¥°ó¶¨ÔÚÍ¬Ò»¸öÊÂ¼ş
+        #menu_id_refreshå’ŒbtnRefreshæŒ‰é’®ç»‘å®šåœ¨åŒä¸€ä¸ªäº‹ä»¶
         global_var.main_frame.Bind(wx.EVT_MENU,btnRefresh_handle, id=menu_id_refresh)
         lstControl.PopupMenu(popmenu)
         popmenu.Destroy()
     return
 #############################################################################################################
-#ÎÄ¼şÁĞ±íµÄÒ»ÏµÁĞÏìÓ¦ÊÂ¼ş½áÊø
+#æ–‡ä»¶åˆ—è¡¨çš„ä¸€ç³»åˆ—å“åº”äº‹ä»¶ç»“æŸ
 ##############################################################################################################
 
 ##############################################################################################################
-#±¾´ÎÏÂÔØÁĞ±í¿òµÄÏìÓ¦ÊÂ¼ş
+#æœ¬æ¬¡ä¸‹è½½åˆ—è¡¨æ¡†çš„å“åº”äº‹ä»¶
 ################################################
-#×¢Òâprint_fileÁĞ±íÖĞÖ»ÓĞË÷ÒıÃ»ÓĞÆäËûĞÅÏ¢
-#local_filesÖĞÊÇ¿Î³ÌË÷ÒıºÍÎÄ¼şË÷ÒıµÄÔª×é
-#localselÍ¬ÑùÖ»ÓĞË÷ÒıĞÅÏ¢
+#æ³¨æ„print_fileåˆ—è¡¨ä¸­åªæœ‰ç´¢å¼•æ²¡æœ‰å…¶ä»–ä¿¡æ¯
+#local_filesä¸­æ˜¯è¯¾ç¨‹ç´¢å¼•å’Œæ–‡ä»¶ç´¢å¼•çš„å…ƒç»„
+#localselåŒæ ·åªæœ‰ç´¢å¼•ä¿¡æ¯
 
 
 def localSelected_cmd(event):
@@ -277,7 +289,7 @@ def localDeSelected_cmd(event):
 def printFile(event):
     for i in global_var.localsel:
         global_var.lstLocalFile.SetItemImage(i,0)
-        #´Ë´¦Í¬ÉÏ£¨ÎÄ¼şÁĞ±íµÄÑ¡Ôñº¯ÊıÖĞ£©venture
+        #æ­¤å¤„åŒä¸Šï¼ˆæ–‡ä»¶åˆ—è¡¨çš„é€‰æ‹©å‡½æ•°ä¸­ï¼‰venture
         if (not i in global_var.print_files):
             global_var.print_files.append(i)
 
@@ -289,27 +301,27 @@ def noprintFile(event):
 def lstLocalFile_RightClick(event):
     lstControl = global_var.lstLocalFile
     
-    #Éú³Éµ¯³ö²Ëµ¥
+    #ç”Ÿæˆå¼¹å‡ºèœå•
     if global_var.localsel:
         popmenu = wx.Menu()
         menu_id_print = wx.NewId()
-        popmenu.Append(menu_id_print, u"ÉèÖÃ¸´ÖÆ±ê¼Ç")
+        popmenu.Append(menu_id_print, u"è®¾ç½®å¤åˆ¶æ ‡è®°")
         menu_id_noprint=wx.NewId()
-        popmenu.Append(menu_id_noprint, u"È¡Ïû¸´ÖÆ±ê¼Ç")
+        popmenu.Append(menu_id_noprint, u"å–æ¶ˆå¤åˆ¶æ ‡è®°")
         
         global_var.main_frame.Bind(wx.EVT_MENU,printFile, id=menu_id_print)
         global_var.main_frame.Bind(wx.EVT_MENU,noprintFile, id=menu_id_noprint)
         lstControl.PopupMenu(popmenu)
         popmenu.Destroy()
     return
-#½áÊø
+#ç»“æŸ
 #########################################################################################################
 
 
 
 
 ########################################################################################
-#²Ëµ¥Ïî¡¢¹¤¾ßÀ¸¡¢ÖÚ°´Å¥µÄ´¦Àíº¯Êı
+#èœå•é¡¹ã€å·¥å…·æ ã€ä¼—æŒ‰é’®çš„å¤„ç†å‡½æ•°
 ########################################################################################
 def logItem_handle(event): # wxGlade: MainFrame.<event_handler>
     ret = global_var.logDialog.ShowModal()
@@ -326,13 +338,13 @@ def logItem_handle(event): # wxGlade: MainFrame.<event_handler>
             global_var.warnDialog.html.SetPage(u'''
             <html>
             <body bgcolor="#FFEFD5">
-            <centre><font size=4><strong>¶Ô²»Æğ£¬³ÌĞòÃ¦ÂµÖĞ...</font></centre>
+            <centre><font size=4><strong>å¯¹ä¸èµ·ï¼Œç¨‹åºå¿™ç¢Œä¸­...</font></centre>
             
             </body>
             </html>
             ''')
             global_var.warnDialog.SetSize((300,200))
-            global_var.warnDialog.SetTitle(u"ºóÌ¨ÔËĞĞ¾¯¸æ")
+            global_var.warnDialog.SetTitle(u"åå°è¿è¡Œè­¦å‘Š")
             global_var.warnDialog.ShowModal()
 
 
@@ -341,7 +353,7 @@ def hlpItem_handle(event):
     global_var.warnDialog.html.SetPage(f.read())
     f.close()
     global_var.warnDialog.SetSize((950,660))
-    global_var.warnDialog.SetTitle(u"°ïÖú")
+    global_var.warnDialog.SetTitle(u"å¸®åŠ©")
     global_var.warnDialog.ShowModal()
 
 def aboutItem_handle(event):
@@ -353,7 +365,7 @@ def aboutItem_handle(event):
 
 
 
-#´Ë´¦ĞèÒª¶àÏß³Ì´¦Àí
+#æ­¤å¤„éœ€è¦å¤šçº¿ç¨‹å¤„ç†
 def downAllTool_handle(event):
     if not global_var.theThread.isAlive():
         global_var.theThread=MyThread(_downAll,'name')
@@ -362,35 +374,35 @@ def downAllTool_handle(event):
         global_var.warnDialog.html.SetPage(u'''
         <html>
         <body bgcolor="#FFEFD5">
-        <centre><font size=4><strong>¶Ô²»Æğ£¬³ÌĞòÃ¦ÂµÖĞ...</font></centre>
+        <centre><font size=4><strong>å¯¹ä¸èµ·ï¼Œç¨‹åºå¿™ç¢Œä¸­...</font></centre>
         
         </body>
         </html>
         ''')
         global_var.warnDialog.SetSize((300,200))
-        global_var.warnDialog.SetTitle(u"ºóÌ¨ÔËĞĞ¾¯¸æ")
+        global_var.warnDialog.SetTitle(u"åå°è¿è¡Œè­¦å‘Š")
         global_var.warnDialog.ShowModal()
         
 def _downAll():
-    global_var.statusBar.SetStatusText(u"×´Ì¬£ºÃ¦Âµ",2)
+    global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šå¿™ç¢Œ",2)
     download.refreshFiles()
     #if(1):
     try:
         download.DownAll()
     #else:
     except:
-        global_var.statusBar.SetStatusText(u"ÓÉÓÚÍøÂç»òÆäËûÔ­Òò£¬ÏÂÔØ±»ÖĞ¶Ï",1)
-        global_var.statusBar.SetStatusText(u"×´Ì¬£º¿ÕÏĞ",2)
+        global_var.statusBar.SetStatusText(u"ç”±äºç½‘ç»œæˆ–å…¶ä»–åŸå› ï¼Œä¸‹è½½è¢«ä¸­æ–­",1)
+        global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šç©ºé—²",2)
         return
     try:
         download.refreshNotes()
     except:
-        global_var.statusBar.SetStatusText(u"ÓÉÓÚÍøÂç»òÆäËûÔ­Òò£¬¸üĞÂÎÄ¼şÁĞ±í±»ÖĞ¶Ï",1)
-        global_var.statusBar.SetStatusText(u"×´Ì¬£º¿ÕÏĞ",2)
+        global_var.statusBar.SetStatusText(u"ç”±äºç½‘ç»œæˆ–å…¶ä»–åŸå› ï¼Œæ›´æ–°æ–‡ä»¶åˆ—è¡¨è¢«ä¸­æ–­",1)
+        global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šç©ºé—²",2)
         return
     saveList()
-    global_var.statusBar.SetStatusText(u"ËùÓĞµÄ¿Î¼şÒÑ¾­³É¹¦ÏÂÔØ£¬ËùÓĞ¿Î³Ì¹«¸æÒÑ¾­¸üĞÂ",1)
-    global_var.statusBar.SetStatusText(u"×´Ì¬£º¿ÕÏĞ",2)
+    global_var.statusBar.SetStatusText(u"æ‰€æœ‰çš„è¯¾ä»¶å·²ç»æˆåŠŸä¸‹è½½ï¼Œæ‰€æœ‰è¯¾ç¨‹å…¬å‘Šå·²ç»æ›´æ–°",1)
+    global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šç©ºé—²",2)
 
 
 def downAllFilesTool_handle(event): # wxGlade: MainFrame.<event_handler>
@@ -401,17 +413,17 @@ def downAllFilesTool_handle(event): # wxGlade: MainFrame.<event_handler>
         global_var.warnDialog.html.SetPage(u'''
         <html>
         <body bgcolor="#FFEFD5">
-        <centre><font size=4><strong>¶Ô²»Æğ£¬³ÌĞòÃ¦ÂµÖĞ...</font></centre>
+        <centre><font size=4><strong>å¯¹ä¸èµ·ï¼Œç¨‹åºå¿™ç¢Œä¸­...</font></centre>
         
         </body>
         </html>
         ''')
         global_var.warnDialog.SetSize((300,200))
-        global_var.warnDialog.SetTitle(u"ºóÌ¨ÔËĞĞ¾¯¸æ")
+        global_var.warnDialog.SetTitle(u"åå°è¿è¡Œè­¦å‘Š")
         global_var.warnDialog.ShowModal()
         
 
-#¶àÏß³Ì´¦Àí
+#å¤šçº¿ç¨‹å¤„ç†
 def refreshNotesTool_handle(event): # wxGlade: MainFrame.<event_handler>
     if not global_var.theThread.isAlive():
         global_var.theThread=MyThread(_refreshNotes,'name')
@@ -420,30 +432,30 @@ def refreshNotesTool_handle(event): # wxGlade: MainFrame.<event_handler>
         global_var.warnDialog.html.SetPage(u'''
         <html>
         <body bgcolor="#FFEFD5">
-        <centre><font size=4><strong>¶Ô²»Æğ£¬³ÌĞòÃ¦ÂµÖĞ...</font></centre>
+        <centre><font size=4><strong>å¯¹ä¸èµ·ï¼Œç¨‹åºå¿™ç¢Œä¸­...</font></centre>
         
         </body>
         </html>
         ''')
         global_var.warnDialog.SetSize((300,200))
-        global_var.warnDialog.SetTitle(u"ºóÌ¨ÔËĞĞ¾¯¸æ")
+        global_var.warnDialog.SetTitle(u"åå°è¿è¡Œè­¦å‘Š")
         global_var.warnDialog.ShowModal()
         
     
 def _refreshNotes():
-    global_var.statusBar.SetStatusText(u"ÕıÔÚ¸üĞÂ¿Î³Ì¹«¸æ......",1)
-    global_var.statusBar.SetStatusText(u"×´Ì¬£ºÃ¦Âµ",2)
+    global_var.statusBar.SetStatusText(u"æ­£åœ¨æ›´æ–°è¯¾ç¨‹å…¬å‘Š......",1)
+    global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šå¿™ç¢Œ",2)
     try:
         download.refreshNotes()
     except:
-        global_var.statusBar.SetStatusText(u"ÓÉÓÚÍøÂç»òÆäËûÔ­Òò£¬¸üĞÂÎÄ¼şÁĞ±í±»ÖĞ¶Ï",1)
-        global_var.statusBar.SetStatusText(u"×´Ì¬£º¿ÕÏĞ",2)
+        global_var.statusBar.SetStatusText(u"ç”±äºç½‘ç»œæˆ–å…¶ä»–åŸå› ï¼Œæ›´æ–°æ–‡ä»¶åˆ—è¡¨è¢«ä¸­æ–­",1)
+        global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šç©ºé—²",2)
         return
     saveList()
     ShowCourse()
     ShowFile(-1)
-    global_var.statusBar.SetStatusText(u"¹«¸æ¸üĞÂÍê±Ï",1)
-    global_var.statusBar.SetStatusText(u"×´Ì¬£º¿ÕÏĞ",2)
+    global_var.statusBar.SetStatusText(u"å…¬å‘Šæ›´æ–°å®Œæ¯•",1)
+    global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šç©ºé—²",2)
 
 
 def stopTool_handle(event): # wxGlade: MainFrame.<event_handler>
@@ -455,14 +467,14 @@ def stopTool_handle(event): # wxGlade: MainFrame.<event_handler>
         pass
 
 def _refreshAll():
-    global_var.statusBar.SetStatusText(u"×´Ì¬£ºÃ¦Âµ",2)
-    global_var.statusBar.SetStatusText(u"ÕıÔÚ¸üĞÂ¿Î¼şÁĞ±í......",1)
+    global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šå¿™ç¢Œ",2)
+    global_var.statusBar.SetStatusText(u"æ­£åœ¨æ›´æ–°è¯¾ä»¶åˆ—è¡¨......",1)
     download.refreshFiles()
     saveList()
     ShowCourse()
     ShowFile(-1)
-    global_var.statusBar.SetStatusText(u"¿Î¼şÁĞ±í¸üĞÂÍê±Ï",1)
-    global_var.statusBar.SetStatusText(u"×´Ì¬£º¿ÕÏĞ",2)
+    global_var.statusBar.SetStatusText(u"è¯¾ä»¶åˆ—è¡¨æ›´æ–°å®Œæ¯•",1)
+    global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šç©ºé—²",2)
 
 
 def refreshAllTool_handle(event): # wxGlade: MainFrame.<event_handler>
@@ -473,13 +485,13 @@ def refreshAllTool_handle(event): # wxGlade: MainFrame.<event_handler>
         global_var.warnDialog.html.SetPage(u'''
         <html>
         <body bgcolor="#FFEFD5">
-        <centre><font size=4><strong>¶Ô²»Æğ£¬³ÌĞòÃ¦ÂµÖĞ...</font></centre>
+        <centre><font size=4><strong>å¯¹ä¸èµ·ï¼Œç¨‹åºå¿™ç¢Œä¸­...</font></centre>
         
         </body>
         </html>
         ''')
         global_var.warnDialog.SetSize((300,200))
-        global_var.warnDialog.SetTitle(u"ºóÌ¨ÔËĞĞ¾¯¸æ")
+        global_var.warnDialog.SetTitle(u"åå°è¿è¡Œè­¦å‘Š")
         global_var.warnDialog.ShowModal()
         
 
@@ -489,29 +501,29 @@ def DownMarked():
     filelist.sort()
     courseindex=global_var.current_courseindex
     global_var.app_stat='downmark'
-    global_var.statusBar.SetStatusText(u"×´Ì¬£ºÃ¦Âµ",2)
+    global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šå¿™ç¢Œ",2)
     for fileindex in filelist:
         if global_var.app_stat=='breakdown':
-            global_var.statusBar.SetStatusText(u"ÏÂÔØ±»ÖĞ¶Ï",1)
-            global_var.statusBar.SetStatusText(u"×´Ì¬£º¿ÕÏĞ",2)
+            global_var.statusBar.SetStatusText(u"ä¸‹è½½è¢«ä¸­æ–­",1)
+            global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šç©ºé—²",2)
             return
-        #±¾µØÈô´æÔÚÍêÈ«Ò»ÑùµÄÎÄ¼ş½øĞĞÌáÊ¾
+        #æœ¬åœ°è‹¥å­˜åœ¨å®Œå…¨ä¸€æ ·çš„æ–‡ä»¶è¿›è¡Œæç¤º
         exists=download.IsExist(courseindex,fileindex) and (download.IsNew(courseindex,fileindex))
         if exists:
-            #¿ÉÄÜÓÉÓÚ½ø³Ì¼äµÄ¾ºÕù£¬´Ë¶Ô»°¿òÂÅ´Î³ö´í£¬²»ÓÃ¶Ô»°¿ò
-            #warninfo=u"ÌáÊ¾£ºÎÄ¼ş"+global_var.list[courseindex][2][fileindex]['file_realname'].decode('gbk')+u"Óë±¾µØµÄ"+download.IsExist(courseindex,fileindex)+u"´óĞ¡²»Ò»Ñù£¬½«¸²¸ÇÔ­ÎÄ¼ş"
+            #å¯èƒ½ç”±äºè¿›ç¨‹é—´çš„ç«äº‰ï¼Œæ­¤å¯¹è¯æ¡†å±¡æ¬¡å‡ºé”™ï¼Œä¸ç”¨å¯¹è¯æ¡†
+            #warninfo=u"æç¤ºï¼šæ–‡ä»¶"+global_var.list[courseindex][2][fileindex]['file_realname'].decode('gbk')+u"ä¸æœ¬åœ°çš„"+download.IsExist(courseindex,fileindex)+u"å¤§å°ä¸ä¸€æ ·ï¼Œå°†è¦†ç›–åŸæ–‡ä»¶"
             #global_var.warnDialog.txtInfo.SetValue(warninfo)
             #global_var.warnDialog.ShowModal()
             if True:
                 download.DownSingle(courseindex,fileindex)
-                #ÏÂÔØÍê³Éºó°Ñ±¾´ÎÏÂÔØÁĞ±í¸üĞÂ
+                #ä¸‹è½½å®ŒæˆåæŠŠæœ¬æ¬¡ä¸‹è½½åˆ—è¡¨æ›´æ–°
                 if not((courseindex,fileindex) in global_var.local_files):
                     global_var.lstLocalFile.InsertStringItem(len(global_var.local_files),global_var.list[courseindex][2][fileindex]['file_realname'])
                     global_var.lstLocalFile.SetItemImage(len(global_var.local_files),0)
                     global_var.print_files.append(len(global_var.local_files))
                     global_var.local_files.append((courseindex,fileindex))
             else:
-                global_var.statusBar.SetStatusText(u"ÏÂÔØÒÑÈ¡Ïû",1)
+                global_var.statusBar.SetStatusText(u"ä¸‹è½½å·²å–æ¶ˆ",1)
         else:
             download.DownSingle(courseindex,fileindex)
             global_var.lstLocalFile.InsertStringItem(len(global_var.local_files),global_var.list[courseindex][2][fileindex]['file_realname'])
@@ -519,7 +531,7 @@ def DownMarked():
             global_var.print_files.append(len(global_var.local_files))
             global_var.local_files.append((courseindex,fileindex))
     ShowFile(courseindex)
-    global_var.statusBar.SetStatusText(u"×´Ì¬£º¿ÕÏĞ",2)
+    global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šç©ºé—²",2)
     global_var.current_fileindex=[]
 
 def btnDownMarked_handle(event):
@@ -530,12 +542,12 @@ def btnDownMarked_handle(event):
         global_var.warnDialog.html.SetPage(u'''
         <html>
         <body bgcolor="#FFEFD5">
-        <centre><font size=4><strong>¶Ô²»Æğ£¬³ÌĞòÃ¦ÂµÖĞ...</font></centre>
+        <centre><font size=4><strong>å¯¹ä¸èµ·ï¼Œç¨‹åºå¿™ç¢Œä¸­...</font></centre>
         </body>
         </html>
         ''')
         global_var.warnDialog.SetSize((300,200))
-        global_var.warnDialog.SetTitle(u"ºóÌ¨ÔËĞĞ¾¯¸æ")
+        global_var.warnDialog.SetTitle(u"åå°è¿è¡Œè­¦å‘Š")
         global_var.warnDialog.ShowModal()
         
     
@@ -549,17 +561,17 @@ def btnRefresh_handle(event): # wxGlade: MainFrame.<event_handler>
         global_var.warnDialog.html.SetPage(u'''
         <html>
         <body bgcolor="#FFEFD5">
-        <centre><font size=4><strong>¶Ô²»Æğ£¬³ÌĞòÃ¦ÂµÖĞ...</font></centre>
+        <centre><font size=4><strong>å¯¹ä¸èµ·ï¼Œç¨‹åºå¿™ç¢Œä¸­...</font></centre>
         </body>
         </html>
         ''')
         global_var.warnDialog.SetSize((300,200))
-        global_var.warnDialog.SetTitle(u"ºóÌ¨ÔËĞĞ¾¯¸æ")
+        global_var.warnDialog.SetTitle(u"åå°è¿è¡Œè­¦å‘Š")
         global_var.warnDialog.ShowModal()
         
 
 def _Copy():
-    global_var.statusBar.SetStatusText(u"×´Ì¬£ºÃ¦Âµ",2)
+    global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šå¿™ç¢Œ",2)
     #print global_var.print_files
     for i in global_var.print_files:
         (courseindex,fileindex)=global_var.local_files[i]
@@ -572,10 +584,10 @@ def _Copy():
         if os.path.exists(soursepath) :
             if os.path.exists(targetpath):
                 os.remove(targetpath)
-            global_var.statusBar.SetStatusText(u"ÕıÔÚ¸´ÖÆÎÄ¼ş"+filename,1)
+            global_var.statusBar.SetStatusText(u"æ­£åœ¨å¤åˆ¶æ–‡ä»¶"+filename,1)
             copyfile(soursepath,targetpath)
-            global_var.statusBar.SetStatusText(u"¸´ÖÆÍê³É",1)
-        global_var.statusBar.SetStatusText(u"×´Ì¬£º¿ÕÏĞ",2)
+            global_var.statusBar.SetStatusText(u"å¤åˆ¶å®Œæˆ",1)
+        global_var.statusBar.SetStatusText(u"çŠ¶æ€ï¼šç©ºé—²",2)
 def btnCopy_handle(event):
     if not global_var.theThread.isAlive():
         global_var.theThread=MyThread(_Copy,'name')
@@ -584,12 +596,12 @@ def btnCopy_handle(event):
         global_var.warnDialog.html.SetPage(u'''
         <html>
         <body bgcolor="#FFEFD5">
-        <centre><font size=4><strong>¶Ô²»Æğ£¬³ÌĞòÃ¦ÂµÖĞ...</font></centre>
+        <centre><font size=4><strong>å¯¹ä¸èµ·ï¼Œç¨‹åºå¿™ç¢Œä¸­...</font></centre>
         </body>
         </html>
         ''')
         global_var.warnDialog.SetSize((300,200))
-        global_var.warnDialog.SetTitle(u"ºóÌ¨ÔËĞĞ¾¯¸æ")
+        global_var.warnDialog.SetTitle(u"åå°è¿è¡Œè­¦å‘Š")
         global_var.warnDialog.ShowModal()
 
 
@@ -599,13 +611,13 @@ def btnCopy_handle(event):
 
 
 
-#important:Õû¸ö¿ò¼ÜµÄ³õÊ¼»¯
+#important:æ•´ä¸ªæ¡†æ¶çš„åˆå§‹åŒ–
 def FrameInit(frame):
     
     print "-"*80
-    print "Õâ¸öÊÇ³ÌĞòÔËĞĞÆÚ¼äµÄlog´°¿Ú£¬¿ÉÒÔÏÔÊ¾³ÌĞòÔËĞĞµÄÏ¸½Ú²½Öè£¬²»Ïë¿´¿ÉÒÔ¹Øµô"
+    print u"è¿™ä¸ªæ˜¯ç¨‹åºè¿è¡ŒæœŸé—´çš„logçª—å£ï¼Œå¯ä»¥æ˜¾ç¤ºç¨‹åºè¿è¡Œçš„ç»†èŠ‚æ­¥éª¤ï¼Œä¸æƒ³çœ‹å¯ä»¥å…³æ‰"
     print "-"*80
-    #¿ªÊ¼³õÊ¼»¯È«¾Ö±äÁ¿,±ãÓÚÄ£¿é¼ä»¥Ïà·ÃÎÊ´°¿Ú²¿¼ş
+    #å¼€å§‹åˆå§‹åŒ–å…¨å±€å˜é‡,ä¾¿äºæ¨¡å—é—´äº’ç›¸è®¿é—®çª—å£éƒ¨ä»¶
     ######################################################################################################
     global_var.main_frame=frame
     global_var.lstRemoteFile=frame.lstRemoteFile
@@ -613,13 +625,13 @@ def FrameInit(frame):
     global_var.lstLocalFile=frame.lstLocalFile
     global_var.html=frame.html
     
-    #½¨Á¢¶Ô»°¿ò¶ÔÏó
-    global_var.selDirDialog=wx.DirDialog(None, u"Ñ¡ÔñÄ¬ÈÏÄ¿Â¼",style=wx.DD_DEFAULT_STYLE | wx.DD_NEW_DIR_BUTTON)
+    #å»ºç«‹å¯¹è¯æ¡†å¯¹è±¡
+    global_var.selDirDialog=wx.DirDialog(None, u"é€‰æ‹©é»˜è®¤ç›®å½•",style=wx.DD_DEFAULT_STYLE | wx.DD_NEW_DIR_BUTTON)
     global_var.logDialog=Dialogs.LogDialog(frame)
     global_var.warnDialog=Dialogs.WarnDialog(frame)
     global_var.aboutDialog=Dialogs.AboutDialog(frame)
     
-    #½¨Á¢Á¬½Ó¶ÔÏó
+    #å»ºç«‹è¿æ¥å¯¹è±¡
     global_var.conn=download.MyCon()
     global_var.statusBar=frame.statusBar
     global_var.theThread=MyThread(justpass,'a')
@@ -627,29 +639,28 @@ def FrameInit(frame):
     ######################################################################################################
     
     
-    #±£Ö¤±¾µØµÄÅäÖÃ¡¢ÀúÊ·ÎÄ¼ş´æÔÚ£¬Èç¹û²»´æÔÚ£¬°Ñglobal_varÖĞÄ¬ÈÏÉú³ÉµÄsettingºÍhistory´æÈë±¾µØ
+    #ä¿è¯æœ¬åœ°çš„é…ç½®ã€å†å²æ–‡ä»¶å­˜åœ¨ï¼Œå¦‚æœä¸å­˜åœ¨ï¼ŒæŠŠglobal_varä¸­é»˜è®¤ç”Ÿæˆçš„settingå’Œhistoryå­˜å…¥æœ¬åœ°
     loadSetting()
     historypath=os.path.join(global_var.setting['download_path'],u'history')
-    if not (os.path.exists(historypath) and os.path.isfile(historypath)):
-        saveList()
+
     ##################################################################################################
 
-    #°ÑÅäÖÃÎÄ¼ş¶ÁÈëÈ«¾Ö±äÁ¿
+    #æŠŠé…ç½®æ–‡ä»¶è¯»å…¥å…¨å±€å˜é‡
     loadList()
     
-    #¿ªÊ¼¶Ô¸÷¿Ø¼şµÄ³õÊ¼»¯
+    #å¼€å§‹å¯¹å„æ§ä»¶çš„åˆå§‹åŒ–
     ######################################################################################################
     
     global_var.logDialog.txtSetDownPath.SetValue(global_var.setting['download_path'])
     global_var.logDialog.txtSetPrintPath.SetValue(global_var.setting['print_path'])
-    #ÉèÖÃµÇÂ¼¶Ô»°¿òµÄ³õÊ¼Öµ
+    #è®¾ç½®ç™»å½•å¯¹è¯æ¡†çš„åˆå§‹å€¼
     userid=global_var.setting['userinfo'][0]
     userpass=global_var.setting['userinfo'][1]
     if userid:
         global_var.logDialog.txtUserid.SetValue(aeslib.decode(userid))
         global_var.logDialog.txtUserpass.SetValue(aeslib.decode(userpass))
     else:
-        global_var.logDialog.txtUserid.SetValue(u'ÍøÂçÑ§ÌÃÕËºÅ')
+        global_var.logDialog.txtUserid.SetValue(u'ç½‘ç»œå­¦å ‚è´¦å·')
         global_var.logDialog.txtUserpass.SetValue(u'')
 
     #global_var.logDialog.txtUserid.SetValue(u'')
@@ -657,52 +668,52 @@ def FrameInit(frame):
     
     global_var.logDialog.autoSaved.SetValue(global_var.setting['autologin'])
     
-    font1 = wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL, False, u"ËÎÌå")
-    font2 = wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL, False, u"ËÎÌå")
+    font1 = wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL, False, u"å®‹ä½“")
+    font2 = wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL, False, u"å®‹ä½“")
     frame.lstRemoteFile.SetFont(font1)
     frame.lstRemoteCourse.SetFont(font2)
     frame.lstLocalFile.SetFont(font1)
     
-    #Îª¿Î³ÌÁĞ±íÉè¶¨Í¼Æ¬ÁĞ±í
+    #ä¸ºè¯¾ç¨‹åˆ—è¡¨è®¾å®šå›¾ç‰‡åˆ—è¡¨
     il = wx.ImageList(16, 16)
-    il.Add(wx.ArtProvider.GetBitmap(wx.ART_GO_DOWN,wx.ART_OTHER, (16, 16)))      #´ıÏÂÔØ±ê¼Ç
-    il.Add(wx.ArtProvider.GetBitmap(wx.ART_NORMAL_FILE, wx.ART_OTHER, (16, 16))) #ÆÕÍ¨²»ÏÂÔØµÄ±ê¼Ç
-    il.Add(wx.ArtProvider.GetBitmap(wx.ART_TIP, wx.ART_OTHER, (16, 16)))         #±¾µØ¿Î¼şÓëÍøÂçÑ§ÌÃÉÏµÄ´óĞ¡²»Æ¥ÅäÊ±µÄÌáÊ¾Í¼±ê£¨Ò²ÊôÓÚ²»ÏÂÔØÀà£©
-    il.Add(wx.ArtProvider.GetBitmap(wx.ART_DEL_BOOKMARK, wx.ART_OTHER, (16, 16)))  #±»ÓÃ»§ÉèÖÃÎªÆÁ±ÎµÄ¿Î¼şÍ¼±ê£¨²»ÏÂÔØ£©
+    il.Add(wx.ArtProvider.GetBitmap(wx.ART_GO_DOWN,wx.ART_OTHER, (16, 16)))      #å¾…ä¸‹è½½æ ‡è®°
+    il.Add(wx.ArtProvider.GetBitmap(wx.ART_NORMAL_FILE, wx.ART_OTHER, (16, 16))) #æ™®é€šä¸ä¸‹è½½çš„æ ‡è®°
+    il.Add(wx.ArtProvider.GetBitmap(wx.ART_TIP, wx.ART_OTHER, (16, 16)))         #æœ¬åœ°è¯¾ä»¶ä¸ç½‘ç»œå­¦å ‚ä¸Šçš„å¤§å°ä¸åŒ¹é…æ—¶çš„æç¤ºå›¾æ ‡ï¼ˆä¹Ÿå±äºä¸ä¸‹è½½ç±»ï¼‰
+    il.Add(wx.ArtProvider.GetBitmap(wx.ART_DEL_BOOKMARK, wx.ART_OTHER, (16, 16)))  #è¢«ç”¨æˆ·è®¾ç½®ä¸ºå±è”½çš„è¯¾ä»¶å›¾æ ‡ï¼ˆä¸ä¸‹è½½ï¼‰
     frame.lstRemoteFile.AssignImageList(il, wx.IMAGE_LIST_SMALL)    
 
     il2 = wx.ImageList(16, 16)
-    il2.Add(wx.ArtProvider.GetBitmap(wx.ART_ADD_BOOKMARK,wx.ART_OTHER, (16, 16)))      #´ı¸´ÖÆµÄ±ê¼Ç
-    il2.Add(wx.ArtProvider.GetBitmap(wx.ART_DELETE, wx.ART_OTHER, (16, 16))) #²»¸´ÖÆµÄ±ê¼Ç
+    il2.Add(wx.ArtProvider.GetBitmap(wx.ART_ADD_BOOKMARK,wx.ART_OTHER, (16, 16)))      #å¾…å¤åˆ¶çš„æ ‡è®°
+    il2.Add(wx.ArtProvider.GetBitmap(wx.ART_DELETE, wx.ART_OTHER, (16, 16))) #ä¸å¤åˆ¶çš„æ ‡è®°
     frame.lstLocalFile.AssignImageList(il2, wx.IMAGE_LIST_SMALL)
     
-    frame.lstLocalFile.InsertColumn(0, u"ÎÄ¼şÃû",format=wx.LIST_FORMAT_LEFT, width=300)
+    frame.lstLocalFile.InsertColumn(0, u"æ–‡ä»¶å",format=wx.LIST_FORMAT_LEFT, width=300)
     
-    frame.lstRemoteFile.InsertColumn(0, u"ÎÄ¼şÃû",format=wx.LIST_MASK_TEXT | wx.LIST_MASK_IMAGE | wx.LIST_MASK_FORMAT, width=200)
-    frame.lstRemoteFile.InsertColumn(1, u"ÎÄ¼ş´óĞ¡",format=wx.LIST_FORMAT_LEFT, width=80)
-    frame.lstRemoteFile.InsertColumn(2, u"ÉÏ´«Ê±¼ä",format=wx.LIST_FORMAT_LEFT, width=100)
+    frame.lstRemoteFile.InsertColumn(0, u"æ–‡ä»¶å",format=wx.LIST_MASK_TEXT | wx.LIST_MASK_IMAGE | wx.LIST_MASK_FORMAT, width=200)
+    frame.lstRemoteFile.InsertColumn(1, u"æ–‡ä»¶å¤§å°",format=wx.LIST_FORMAT_LEFT, width=80)
+    frame.lstRemoteFile.InsertColumn(2, u"ä¸Šä¼ æ—¶é—´",format=wx.LIST_FORMAT_LEFT, width=100)
     
-    #ÉèÖÃÊ×ÁĞµÄ¸ñÊ½wx.LIST_MASK_TEXT | wx.LIST_MASK_IMAGE | wx.LIST_MASK_FORMAT
+    #è®¾ç½®é¦–åˆ—çš„æ ¼å¼wx.LIST_MASK_TEXT | wx.LIST_MASK_IMAGE | wx.LIST_MASK_FORMAT
     
-    frame.lstRemoteCourse.InsertColumn(0, u"¿Î³ÌÃû",format=wx.LIST_FORMAT_LEFT, width=180)
+    frame.lstRemoteCourse.InsertColumn(0, u"è¯¾ç¨‹å",format=wx.LIST_FORMAT_LEFT, width=180)
 
-    #¿Ø¼ş³õÊ¼»¯Íê±Ï
+    #æ§ä»¶åˆå§‹åŒ–å®Œæ¯•
     ######################################################################################################
     
-    #°ó¶¨ÊÂ¼ş
+    #ç»‘å®šäº‹ä»¶
     EventBind(frame)
     
-    #¼ì²âÊÇ·ñĞèÒª×Ô¶¯µÇÂ¼
+    #æ£€æµ‹æ˜¯å¦éœ€è¦è‡ªåŠ¨ç™»å½•
     check()
     
 
 
 
 
-#°ó¶¨º¯Êı
+#ç»‘å®šå‡½æ•°
 def EventBind(frame):
     
-    #²Ëµ¥Ïî°ó¶¨ÊÂ¼ş
+    #èœå•é¡¹ç»‘å®šäº‹ä»¶
     frame.Bind(wx.EVT_CLOSE,frame.exitApp)
     frame.Bind(wx.EVT_MENU, logItem_handle, frame.logItem)
     frame.Bind(wx.EVT_MENU, frame.exitApp, frame.exitItem)
@@ -716,14 +727,14 @@ def EventBind(frame):
     frame.Bind(wx.EVT_TOOL, stopTool_handle, frame.toolStop)
     frame.Bind(wx.EVT_TOOL, refreshAllTool_handle, frame.tollRefreshAll) 
     frame.Bind(wx.EVT_TOOL, frame.hide, frame.toolHide)   
-    #ÖÚ°´Å¥°ó¶¨ÊÂ¼ş
+    #ä¼—æŒ‰é’®ç»‘å®šäº‹ä»¶
     frame.Bind(wx.EVT_BUTTON, btnDownMarked_handle,frame.btnDownMarked)
     frame.Bind(wx.EVT_BUTTON, btnRefresh_handle, frame.btnRefresh)
     frame.Bind(wx.EVT_BUTTON, btnMarkAll_handle, frame.btnMarkAll)
     frame.Bind(wx.EVT_BUTTON, btnDemarkAll_handle, frame.btnDemarkAll)
     frame.Bind(wx.EVT_BUTTON, btnCopy_handle, frame.btnCopy)
     
-    #ÁĞ±íÏî°ó¶¨
+    #åˆ—è¡¨é¡¹ç»‘å®š
     frame.Bind(wx.EVT_LIST_ITEM_SELECTED,courseSelected_cmd,frame.lstRemoteCourse)
     frame.Bind(wx.EVT_LIST_ITEM_SELECTED,fileSelected_cmd,frame.lstRemoteFile)
     frame.Bind(wx.EVT_LIST_ITEM_DESELECTED,fileDeSelected_cmd,frame.lstRemoteFile)
