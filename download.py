@@ -575,8 +575,22 @@ def DownSingle(courseindex,fileindex):
             print info
             global_var.statusBar.SetStatusText(info,1)
             
+            whole_size = int(list[courseindex][2][fileindex]['file_realsize'])
+            get_size = 0
             newfile=open(filepath,'wb')
-            newfile.write(conn.open(list[courseindex][2][fileindex]['file_url']).read())
+            res = conn.open(list[courseindex][2][fileindex]['file_url'])
+            tmp = res.read(300000)
+            while(tmp):
+                newfile.write(tmp)
+                get_size += 300000
+                ratio = int(round((get_size*100.0)/whole_size))
+                if(not get_size<whole_size):
+                    global_var.statusBar.SetStatusText("[100%]OK:"+info,1)
+                else:
+                    global_var.statusBar.SetStatusText(
+                    "["+str(ratio)+"%]:"+info,
+                    1)
+                tmp = res.read(300000)
             newfile.close()
             if exsit:
                 info=u"覆盖文件"+list[courseindex][2][fileindex]['file_realname']+u"成功"
@@ -622,6 +636,9 @@ def FileType(courseindex,fileindex):
         else:
             return 0
 def count():
-    f=urllib.urlopen('http://mydownloader.3322.org/count/')
-    f.read()
-    f.close()
+    try:
+        f=urllib.urlopen('http://mydownloader.3322.org/count/')
+        f.read()
+        f.close()
+    except:
+        pass
