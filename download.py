@@ -517,14 +517,15 @@ def DownCourse(courseindex):
             if global_var.app_stat=='breakdown':
                 global_var.statusBar.SetStatusText(u"状态：空闲",2)
                 return
-            filepath=os.path.join(download_path,list[courseindex][1],file['file_realname'])
-            newfile=open(filepath,'wb')
-            global_var.statusBar.SetStatusText(u'正在下载'+file['file_realname']+' ......',1)
-            print u'正在下载'+file['file_realname']+u' ......'
-            newfile.write(conn.open(file['file_url']).read())
-            newfile.close()
-            print u'=='+file['file_realname']+u'下载完毕'
-            #此句刷新文件列表显示
+            #filepath=os.path.join(download_path,list[courseindex][1],file['file_realname'])
+            #newfile=open(filepath,'wb')
+            #global_var.statusBar.SetStatusText(u'正在下载'+file['file_realname']+' ......',1)
+            #print u'正在下载'+file['file_realname']+u' ......'
+            #newfile.write(conn.open(file['file_url']).read())
+            #newfile.close()
+            #print u'=='+file['file_realname']+u'下载完毕'
+            DownSingle(courseindex,fileindex)
+	    #此句刷新文件列表显示
             GUItools.ShowFile(courseindex)
             global_var.lstLocalFile.InsertStringItem(len(global_var.local_files),global_var.list[courseindex][2][fileindex]['file_realname'])
             global_var.lstLocalFile.SetItemImage(len(global_var.local_files),0)
