@@ -216,3 +216,4 @@ class AboutDialog(wx.Dialog):
         self.Layout()
 
 # end of class AboutDialog
+#edit my haowei
