@@ -55,7 +55,6 @@ class MyCon:
     def login(self):
         params = urllib.urlencode({'userid': global_var.userid, 'userpass': global_var.userpass, 'submit1': '登录'})
         #print 'Begin 1st open'
-        #params = urllib.urlencode({'userid': 'haow09', 'userpass': 'haowei1987', 'submit1': '登录'})
         self.open('/use_go.jsp',body=params,method="POST")
         self.logstat=1
 
