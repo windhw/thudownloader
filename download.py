@@ -239,7 +239,7 @@ def refreshFiles():
         if(global_var.log_num==2):
             global_var.t2=GUItools.MyThread(count,'name')
             global_var.t2.start()
-        ff=conn.open('/MultiLanguage/lesson/student/download.jsp?course_id='+course[0][-5:])
+        ff=conn.open('/MultiLanguage/lesson/student/download.jsp?course_id='+course[0][-6:])
         filepage=ff.read()
         ff.close()
         pf.__init__()
@@ -304,7 +304,7 @@ def refreshNotes():
     for courseindex in range(len(list)):
         #以下为公告信息
         course=list[courseindex]
-        data=conn.open('/MultiLanguage/public/bbs/getnoteid_student.jsp?course_id='+course[0][-5:],method="HEAD")
+        data=conn.open('/MultiLanguage/public/bbs/getnoteid_student.jsp?course_id='+course[0][-6:],method="HEAD")
         uu=data.getheader('Location').replace('http://learn.tsinghua.edu.cn','')
         print "UU:"+uu
         data.read()
@@ -325,7 +325,7 @@ def RefreshCourse(courseindex):
     print u"正在查询"+global_var.list[courseindex][1]+u"的课件"
     global_var.statusBar.SetStatusText(u"正在查询<<"+global_var.list[courseindex][1]+u">>的课件",1)
     conn=global_var.conn
-    ff=conn.open('/MultiLanguage/lesson/student/download.jsp?course_id='+course[0][-5:])
+    ff=conn.open('/MultiLanguage/lesson/student/download.jsp?course_id='+course[0][-6:])
     filepage=ff.read()
     ff.close()
     pf=parserFile()
@@ -334,7 +334,7 @@ def RefreshCourse(courseindex):
     pf.feed(filepage)
     files=pf.files
     course.append(files)
-    data=conn.open('/MultiLanguage/public/bbs/getnoteid_student.jsp?course_id='+course[0][-5:],method="HEAD")
+    data=conn.open('/MultiLanguage/public/bbs/getnoteid_student.jsp?course_id='+course[0][-6:],method="HEAD")
     uu=data.getheader('Location').replace('http://learn.tsinghua.edu.cn','')
     data.read()
     data.close()
