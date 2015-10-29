@@ -4,13 +4,24 @@
 
 import wx,sys
 import wx.html
+import os
 import GUItools,global_var
+
+def rp(relative_path):
+    """定义一个读取相对路径的函数"""
+    if hasattr(sys, "_MEIPASS"):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
 class ddTaskBarIcon(wx.TaskBarIcon):
     def __init__(self, frame):
         wx.TaskBarIcon.__init__(self)
         self.frame = frame  
-        self.noNewIcon = wx.Icon("extra/MyDownloader.ico",wx.BITMAP_TYPE_ICO)  
-        self.youHaveNewIcon = wx.Icon("extra/MyDownloader.ico",wx.BITMAP_TYPE_ICO)  
+        icon_path = rp("extra\\MyDownloader.ico")
+        self.noNewIcon = wx.Icon(icon_path,wx.BITMAP_TYPE_ICO)  
+        self.youHaveNewIcon = wx.Icon(icon_path,wx.BITMAP_TYPE_ICO)  
         self.CreateMenu()
         self.SetIconImage()
         self.Bind(wx.EVT_TASKBAR_LEFT_DCLICK, self.frame.restore)
@@ -31,7 +42,7 @@ class ddTaskBarIcon(wx.TaskBarIcon):
     
     def SetIconImage(self, mail=False):
         if (1):
-            self.SetIcon(self.youHaveNewIcon, u"MyDownloader-网络学堂助手 ")
+            self.SetIcon(self.youHaveNewIcon, u"THUHelper-网络学堂助手 ")
         else:
             self.SetIcon(self.noNewIcon, u"网络学堂助手 没有新的课件")
     
@@ -80,13 +91,13 @@ class MainFrame(wx.Frame):
         # Tool Bar
         self.mainFrame_toolbar = wx.ToolBar(self, -1)
         self.SetToolBar(self.mainFrame_toolbar)
-        self.toolLogin=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"登陆"), wx.Bitmap("extra\\Login.png", wx.BITMAP_TYPE_PNG), wx.NullBitmap, wx.ITEM_NORMAL, _(u"登陆网络学堂"), "")
-        self.toolDownAll=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"下载更新"), wx.Bitmap("extra\\DownAll.png", wx.BITMAP_TYPE_PNG), wx.NullBitmap, wx.ITEM_NORMAL, _(u"一键即可查询所有课程的课件，下载所有课件，并显示出所有课程的公告，您可以去喝咖啡啦:）"), "")
-        self.toolDownAllFiles=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"下载课件"), wx.Bitmap("extra\\DownFile.png", wx.BITMAP_TYPE_PNG), wx.NullBitmap, wx.ITEM_NORMAL, _(u"下载所有课程的课件"), "")
-        self.toolRefreshNotes=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"更新公告"), wx.Bitmap("extra\\Notice.png", wx.BITMAP_TYPE_PNG), wx.NullBitmap, wx.ITEM_NORMAL, _(u"刷新并显示所有课程的公告"), "")
-        self.tollRefreshAll=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"刷新"), wx.Bitmap("extra\\Refresh.png", wx.BITMAP_TYPE_PNG), wx.NullBitmap, wx.ITEM_NORMAL, _(u"重新查询所有课程的课件列表"), "")
-        self.toolStop=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"停止"), wx.Bitmap("extra\\Stop.png", wx.BITMAP_TYPE_PNG), wx.NullBitmap, wx.ITEM_NORMAL, _(u"停止正在进行的动作"), "")
-        self.toolHide=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"最小化到托盘"), wx.Bitmap("extra\\Hide.png", wx.BITMAP_TYPE_PNG), wx.NullBitmap, wx.ITEM_NORMAL, _(u"最小化到右下角的任务栏托盘"), "")
+        self.toolLogin=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"登陆"), wx.Bitmap(rp("extra\\Login.png"), wx.BITMAP_TYPE_PNG), wx.NullBitmap, wx.ITEM_NORMAL, _(u"登陆网络学堂"), "")
+        self.toolDownAll=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"下载更新"), wx.Bitmap(rp("extra\\DownAll.png"), wx.BITMAP_TYPE_PNG), wx.NullBitmap, wx.ITEM_NORMAL, _(u"一键即可查询所有课程的课件，下载所有课件，并显示出所有课程的公告，您可以去喝咖啡啦:）"), "")
+        self.toolDownAllFiles=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"下载课件"), wx.Bitmap(rp("extra\\DownFile.png"), wx.BITMAP_TYPE_PNG), wx.NullBitmap, wx.ITEM_NORMAL, _(u"下载所有课程的课件"), "")
+        self.toolRefreshNotes=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"更新公告"), wx.Bitmap(rp("extra\\Notice.png"), wx.BITMAP_TYPE_PNG), wx.NullBitmap, wx.ITEM_NORMAL, _(u"刷新并显示所有课程的公告"), "")
+        self.tollRefreshAll=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"刷新"), wx.Bitmap(rp("extra\\Refresh.png"), wx.BITMAP_TYPE_PNG), wx.NullBitmap, wx.ITEM_NORMAL, _(u"重新查询所有课程的课件列表"), "")
+        self.toolStop=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"停止"), wx.Bitmap(rp("extra\\Stop.png"), wx.BITMAP_TYPE_PNG), wx.NullBitmap, wx.ITEM_NORMAL, _(u"停止正在进行的动作"), "")
+        self.toolHide=self.mainFrame_toolbar.AddLabelTool(wx.NewId(), _(u"最小化到托盘"), wx.Bitmap(rp("extra\\Hide.png"), wx.BITMAP_TYPE_PNG), wx.NullBitmap, wx.ITEM_NORMAL, _(u"最小化到右下角的任务栏托盘"), "")
         # Tool Bar end
         self.lstRemoteCourse = wx.ListCtrl(self.panel_5, -1, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
         self.html = wx.html.HtmlWindow(self.panel_6, -1)
