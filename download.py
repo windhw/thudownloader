@@ -271,17 +271,17 @@ def refreshFiles():
             global_var.statusBar.SetStatusText(u"发现文件 "+ raw_name +u'  大小：'+str(file['file_realsize']),1)
             print u"  "+ raw_name +u'  大小：'+str(file['file_realsize'])
             #找寻随机数
-            #try:
-            #    file_random=re.findall(r'\S+_(\d{7,9}).\w+$',raw_name)[0]
-            #except:
-            #    file_random = ''
+            try:
+               file_random=re.findall(r'\S+_(\d{7,9}).\w+$',raw_name)[0]
+            except:
+               file_random = ''
             
-            #if file_random:
-            #    file['file_realname']=raw_name.replace('_'+file_random,'')
-            #else:
-            #    print '无法解析除随机号，使用原文件名，请报告这个错误'
-            #    file['file_realname']=raw_name
-            file['file_realname']=raw_name
+            if file_random:
+               file['file_realname']=raw_name.replace('_'+file_random,'')
+            else:
+               print '无法解析除随机号，使用原文件名，请报告这个错误'
+               file['file_realname']=raw_name
+            # file['file_realname']=raw_name
     ShowNew()
 
 #此函数在已有课程信息的基础上刷新公告信息
@@ -565,7 +565,7 @@ def DownSingle(courseindex,fileindex):
             if (not os.path.exists(coursedir)):
                 os.mkdir(coursedir)
             #此处的字符编码统一成unicode，防止出错
-            os.chdir(download_path+u'\\'+list[courseindex][1])
+            os.chdir(download_path+os.sep+list[courseindex][1])
             filepath = os.path.join(coursedir,list[courseindex][2][fileindex]['file_realname'])
             if os.path.exists(filepath):
                 exsit=1
@@ -606,7 +606,7 @@ def DownSingle(courseindex,fileindex):
 def IsExist(courseindex,fileindex):
     list=global_var.list
     download_path=global_var.setting['download_path']
-    path=download_path+u'\\'+list[courseindex][1]+u'\\'+list[courseindex][2][fileindex]['file_realname']
+    path=os.sep.join([download_path,list[courseindex][1],list[courseindex][2][fileindex]['file_realname']])
     if os.path.exists(path) and os.path.isfile(path):
         return path
     else:
@@ -617,7 +617,7 @@ def IsExist(courseindex,fileindex):
 def IsNew(courseindex,fileindex):
     list=global_var.list
     download_path=global_var.setting['download_path']
-    path=download_path+u'\\'+list[courseindex][1]+u'\\'+list[courseindex][2][fileindex]['file_realname']
+    path=os.sep.join([download_path,list[courseindex][1],list[courseindex][2][fileindex]['file_realname']])
     if os.path.exists(path) and os.path.isfile(path) and abs(os.path.getsize(path)-list[courseindex][2][fileindex]['file_realsize'])>2 :
         return path
     else:
