@@ -8,13 +8,13 @@ from HTMLParser import HTMLParser
 from copy import deepcopy
 
 #a class to setup http link to the server
-class MyCon:  
+class MyCon:
     def __init__(self,host='learn.tsinghua.edu.cn'):
         self.conn=httplib.HTTPConnection(host,80)
         self.precookie=''
         self.thu=' '
         self.logstat=0
-        
+
     def open(self,uri,body=None,method="GET"):
         print "URI: "+uri
         if self.logstat:
@@ -75,7 +75,7 @@ class parserCourse(HTMLParser):
         if tag=='a' and attrs[0][0]=='href' and '/lesson/student/course_locate.jsp?course_id=' in attrs[0][1]:
             self.course.append(attrs[0][1])
             self.state='ok'
-            
+
 
     def handle_data(self,data):
         if(self.state=='ok'):
@@ -105,7 +105,7 @@ class parserFile(HTMLParser):
             for i in attrs:
                 if i[0]=='href' and ('/uploadFile/downloadFile_student.jsp' in i[1]):
                     url=i[1]
-                    
+
                     self.file['file_url']=url
                     self.state='name'
                     return
@@ -122,7 +122,7 @@ class parserFile(HTMLParser):
             self.state='none'
             return
 
-    def handle_endtag(self,tag): 
+    def handle_endtag(self,tag):
         if(self.state=='name'):
             self.state='name_c'
             return
@@ -147,7 +147,7 @@ class parserFile(HTMLParser):
             self.file['file_size']=data.decode('utf8')
         if(self.state=='date'):
             self.file['file_date']=data.decode('utf8')
-            
+
 
 
 #a class to parser notelist
@@ -173,7 +173,7 @@ class parserNote(HTMLParser):
             self.state='date'
             return
 
-    def handle_endtag(self,tag): 
+    def handle_endtag(self,tag):
         if(self.state=='title'):
             self.state='title_c'
             return
@@ -193,7 +193,7 @@ class parserNote(HTMLParser):
             self.note['note_author']=data.decode('utf-8')
         if(self.state=='date'):
             self.note['note_date']=data.decode('utf-8')
-            
+
 
 #getCourse函数对global_var.list初始化，加入基本的课程信息
 #警告：此函数应该仅在用户登录或应用程序初始化时调用
@@ -216,7 +216,7 @@ def getCourse():
     global_var.app_stat='refresh'
     global_var.statusBar.SetStatusText(u"开始根据课程列表刷新课件信息：",1)
     print u"....开始根据课程列表刷新课件信息："
-    
+
 
 #此函数在已有课程信息基础上刷新global_var.list中的课件信息
 def refreshFiles():
@@ -245,7 +245,7 @@ def refreshFiles():
         pf.__init__()
         pf.feed(filepage)
         course[2]=pf.files
-    
+
     #把新的文件加入新文件列表中
     for courseindex in range(len(list)):
         course=list[courseindex]
@@ -253,7 +253,7 @@ def refreshFiles():
             file=course[2][fileindex]
             if not (file['file_url'] in oldfile):
                 global_var.newfile.append((courseindex,fileindex))
-    
+
     #确定每个文件的具体信息(文件名，实际大小)
     for course in list:
         print u"-"*60
@@ -275,7 +275,7 @@ def refreshFiles():
                file_random=re.findall(r'\S+_(\d{7,9}).\w+$',raw_name)[0]
             except:
                file_random = ''
-            
+
             if file_random:
                file['file_realname']=raw_name.replace('_'+file_random,'')
             else:
@@ -295,7 +295,7 @@ def refreshNotes():
     oldnote=[]
     global_var.newnote={}
     pn=parserNote()
-    
+
     for course in prelist:
         for note in course[3]:
             oldnote.append(note['note_url'])
@@ -356,12 +356,12 @@ def RefreshCourse(courseindex):
             file['file_realname']=raw_name.replace('_'+file_random,'')
         else:
             print '无法解析除随机号，使用原文件名，请报告这个错误'
-            file['file_realname']=raw_name   
+            file['file_realname']=raw_name
     global_var.list[courseindex]=course
     global_var.statusBar.SetStatusText(u"<<"+global_var.list[courseindex][1]+u">>的课件查询完毕",1)
     print u">>"+global_var.list[courseindex][1]+u"的课件查询完毕"
     CreateHtml(courseindex)
-    
+
 
 #此函数生成指定课程的公告网页，被调用
 def CreateHtml(courseindex,oldnote=[]):
@@ -371,8 +371,8 @@ def CreateHtml(courseindex,oldnote=[]):
     conn=global_var.conn
     if not os.path.isdir(os.path.join(global_var.setting['download_path'],u'notes')):
         os.mkdir(os.path.join(global_var.setting['download_path'],u'notes'))
-    
-    
+
+
     f=open(os.path.join(global_var.setting['download_path'],u'notes',(list[courseindex][1]+u'.htm')),'w')
     pre=u'''
     <html>
@@ -398,7 +398,7 @@ def CreateHtml(courseindex,oldnote=[]):
     for noteindex in range(len(list[courseindex][3])):
         note=list[courseindex][3][noteindex]
         pre+=u'''<li><a href="#'''+str(noteindex)+'''">'''+note['note_title']+'  ('+note['note_date']+')</a></li>\n'
-    
+
     pre+=u'''</ul></div>\n<div id="content">\n'''
     print "ok!!"
     for noteindex in range(len(list[courseindex][3])):
@@ -495,8 +495,8 @@ def ShowNew():
     f.close()
     print u'>>更新的公告查询完毕'
     global_var.statusBar.SetStatusText( u'此次更新的公告查询完毕',1)
-        
-        
+
+
 
 #此函数下载指定课程的文件
 def DownCourse(courseindex):
@@ -535,7 +535,7 @@ def DownCourse(courseindex):
     global_var.statusBar.SetStatusText(u'<<'+list[courseindex][1]+u'>>的所有课件下载完毕',1)
     print '-'*80
     print '>>'+list[courseindex][1]+u' 的课程文件下载完毕'
-    
+
 
 #此函数下载所有课程的文件
 def DownAll():
@@ -574,7 +574,7 @@ def DownSingle(courseindex,fileindex):
                 info=u"正在下载文件"+list[courseindex][2][fileindex]['file_realname']+u' ......'
             print info
             global_var.statusBar.SetStatusText(info,1)
-            
+
             whole_size = int(list[courseindex][2][fileindex]['file_realsize'])
             get_size = 0
             newfile=open(filepath,'wb')
@@ -600,7 +600,7 @@ def DownSingle(courseindex,fileindex):
             global_var.statusBar.SetStatusText(info,1)
     #os.chdir(download_path)
     return
-    
+
 
 #此函数判断列表中的文件是否存在于默认文件夹中
 def IsExist(courseindex,fileindex):
@@ -611,7 +611,7 @@ def IsExist(courseindex,fileindex):
         return path
     else:
         return False
-    
+
 
 #此函数判断文件大小是否匹配
 def IsNew(courseindex,fileindex):
@@ -622,7 +622,7 @@ def IsNew(courseindex,fileindex):
         return path
     else:
         return False
-    
+
 
 #确定文件的显示类别：待下载，不下载...etc
 def FileType(courseindex,fileindex):
