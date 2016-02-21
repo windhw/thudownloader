@@ -408,7 +408,10 @@ def CreateHtml(courseindex,oldnote=[]):
         data.close()
         uu=uu.split('''colspan="3"''')[2]
         uu=uu.split('class="info_b"')[0]
-        uu=uu[2:-43]
+        uu=uu[69:-43]
+        # TODO 这样搞太TM难看了
+        uu = uu.decode('utf-8')
+        # print uu
         uu = uu.decode('utf-8')
         print uu
         if not(note['note_url'] in oldnote):
